@@ -93,8 +93,8 @@ export function SiteFooter({ currentPath }: SiteFooterProps) {
                 </a>
               </li>
               <li>
-                <a href="/sitemap-index.xml" className="hover:text-white">
-                  XML sitemaps
+                <a href="/sitemap.xml" className="hover:text-white">
+                  XML sitemap
                 </a>
               </li>
             </ul>

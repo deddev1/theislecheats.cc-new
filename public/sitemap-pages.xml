@@ -1,57 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://theislecheats.cc/</loc>
     <lastmod>2026-09-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/" />
-    <image:image>
-      <image:loc>https://theislecheats.cc/media/theisle-cheats-esp-forest.jpg</image:loc>
-      <image:title>TheIsle Cheats ESP Gameplay</image:title>
-      <image:caption>Entity ESP gameplay shown before checkout.</image:caption>
-    </image:image>
   </url>
   <url>
     <loc>https://theislecheats.cc/reviews</loc>
     <lastmod>2026-09-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/reviews" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/reviews" />
-    <image:image>
-      <image:loc>https://theislecheats.cc/media/theisle-cheats-esp-forest.jpg</image:loc>
-      <image:title>The Isle Cheats Review Gameplay</image:title>
-      <image:caption>Gameplay accompanying verified buyer reviews.</image:caption>
-    </image:image>
   </url>
   <url>
     <loc>https://theislecheats.cc/faq</loc>
     <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.75</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/faq" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/faq" />
-    <image:image>
-      <image:loc>https://theislecheats.cc/media/theisle-cheats-esp-river.jpg</image:loc>
-      <image:title>Evrima ESP FAQ Gameplay</image:title>
-      <image:caption>Product screenshot accompanying pre-purchase answers.</image:caption>
-    </image:image>
   </url>
   <url>
     <loc>https://theislecheats.cc/support</loc>
     <lastmod>2026-09-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.75</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/support" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/support" />
-    <image:image>
-      <image:loc>https://theislecheats.cc/media/theisle-cheats-esp-forest.jpg</image:loc>
-      <image:title>The Isle Cheats Support Gameplay</image:title>
-      <image:caption>Evrima ESP reference accompanying load, inject and delivery support.</image:caption>
-    </image:image>
   </url>
 </urlset>

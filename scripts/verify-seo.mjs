@@ -126,14 +126,8 @@ for (const url of requiredUrls) {
 if ((sitemap.match(/<url>/g) || []).length !== requiredUrls.length) {
   fail(`sitemap.xml must contain exactly ${requiredUrls.length} URLs`)
 }
-if ((sitemap.match(/<image:image>/g) || []).length !== requiredUrls.length) {
-  fail('Every sitemap URL must include an image entry')
-}
-if (!sitemap.includes('/media/theisle-cheats-esp-forest.jpg')) {
-  fail('sitemap.xml lacks forest gameplay image')
-}
-if (!sitemap.includes('/media/theisle-cheats-esp-river.jpg')) {
-  fail('sitemap.xml lacks river gameplay image')
+if (/<xhtml:|image:image/i.test(sitemap)) {
+  fail('sitemap.xml must be a minimal urlset (loc + lastmod only) for GSC')
 }
 const childMaps = [
   'sitemap-pages.xml',
@@ -141,13 +135,14 @@ const childMaps = [
   'sitemap-forums.xml',
   'sitemap-forum-topics.xml',
 ]
-let childImageCount = 0
 const childLocs = new Set()
 for (const name of childMaps) {
   const path = join(dist, name)
   if (!existsSync(path)) fail(`Missing child sitemap: ${name}`)
   const xml = readFileSync(path, 'utf8')
-  childImageCount += (xml.match(/<image:image>/g) || []).length
+  if (/<xhtml:|image:image/i.test(xml)) {
+    fail(`${name} must be a minimal urlset (loc + lastmod only)`)
+  }
   for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
     const loc = match[1]
     if (childLocs.has(loc)) fail(`Duplicate URL across child sitemaps: ${loc}`)
@@ -162,9 +157,6 @@ if ((indexXml.match(/<sitemap>/g) || []).length !== 4) {
 }
 if (childLocs.size !== requiredUrls.length) {
   fail(`Child sitemaps must list exactly ${requiredUrls.length} unique URLs`)
-}
-if (childImageCount !== requiredUrls.length) {
-  fail('Each child sitemap URL must include an image entry')
 }
 if (existsSync(join(dist, 'sitemap-images.xml'))) {
   fail('Remove legacy sitemap-images.xml (URLs must not be duplicated in the index)')

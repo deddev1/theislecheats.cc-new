@@ -34,8 +34,8 @@ if (!existsSync(robotsPath)) {
   throw new Error('dist/robots.txt missing')
 }
 const robots = readFileSync(robotsPath, 'utf8')
-if (!robots.includes('sitemap-index.xml')) {
-  throw new Error('robots.txt must reference sitemap-index.xml')
+if (!robots.includes('Sitemap:') || !robots.includes('/sitemap.xml')) {
+  throw new Error('robots.txt must reference sitemap.xml')
 }
 
 const childMaps = [
