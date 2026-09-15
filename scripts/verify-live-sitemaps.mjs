@@ -1,7 +1,7 @@
 /**
  * Smoke-test live sitemap URLs (run after deploy). Usage: node scripts/verify-live-sitemaps.mjs
  */
-const SITE = (process.env.SITE_URL || 'https://theislecheats.cc').replace(/\/$/, '')
+const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
 const failures = []
 
 function fail(message) {
@@ -37,21 +37,17 @@ async function main() {
   const robotsRes = await fetch(`${SITE}/robots.txt`)
   const robots = await robotsRes.text()
   if (!robotsRes.ok) fail(`/robots.txt: HTTP ${robotsRes.status}`)
-  if (!robots.includes('Sitemap: https://theislecheats.cc/sitemap.xml')) {
-    fail('robots.txt must list apex Sitemap URL')
+  if (!robots.includes(`Sitemap: ${SITE}/sitemap.xml`)) {
+    fail(`robots.txt must list Sitemap: ${SITE}/sitemap.xml`)
   }
 
   const locs = [...mainXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
   if (!locs.length) fail('sitemap.xml has no <loc> entries')
   if (!locs.every((loc) => loc === SITE || loc.startsWith(`${SITE}/`))) {
-    fail('sitemap.xml contains URLs outside the apex property')
+    fail('sitemap.xml contains URLs outside the site property')
   }
 
-  const wwwRes = await fetch(`https://www.theislecheats.cc/sitemap.xml`, { redirect: 'manual' })
-  if (wwwRes.status !== 301 && wwwRes.status !== 308) {
-    fail(`www sitemap should 301 to apex (got ${wwwRes.status}) — use GSC property https://theislecheats.cc not www`)
-  }
-  const httpRes = await fetch(`http://theislecheats.cc/sitemap.xml`, { redirect: 'manual' })
+  const httpRes = await fetch(`http://www.theislecheats.cc/sitemap.xml`, { redirect: 'manual' })
   if (httpRes.status !== 301 && httpRes.status !== 308) {
     fail(`http sitemap should 301 to https (got ${httpRes.status})`)
   }

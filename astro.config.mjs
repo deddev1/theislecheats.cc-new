@@ -3,7 +3,7 @@ import react from '@astrojs/react'
 import tailwind from '@astrojs/tailwind'
 
 export default defineConfig({
-  site: 'https://theislecheats.cc',
+  site: 'https://www.theislecheats.cc',
   output: 'static',
   trailingSlash: 'never',
   compressHTML: true,
@@ -18,6 +18,25 @@ export default defineConfig({
     }),
   ],
   vite: {
+    plugins: [
+      {
+        name: 'sitemap-xml-browser-redirect',
+        configureServer(server) {
+          server.middlewares.use((req, res, next) => {
+            const path = (req.url || '').split('?')[0]
+            if (!/\/sitemap[^/]*\.xml$/i.test(path)) return next()
+            const dest = req.headers['sec-fetch-dest']
+            const accept = req.headers.accept || ''
+            if ((dest === 'document' || dest === 'iframe') && accept.includes('text/html')) {
+              res.writeHead(302, { Location: '/sitemap' })
+              res.end()
+              return
+            }
+            next()
+          })
+        },
+      },
+    ],
     server: {
       port: 5175,
       strictPort: true,

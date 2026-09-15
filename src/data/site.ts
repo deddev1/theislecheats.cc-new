@@ -1,8 +1,8 @@
 import { ISLE_OG, PAGE_IMAGES } from './images'
 
-export const SITE_URL = 'https://theislecheats.cc'
+export const SITE_URL = 'https://www.theislecheats.cc'
 export const SITE_NAME = 'The Isle Cheats'
-export const SITE_HOST = 'theislecheats.cc'
+export const SITE_HOST = 'www.theislecheats.cc'
 
 /** Add verified profile URLs only (Discord, X, etc.). Leave empty if none. */
 export const SITE_SAME_AS: string[] = []

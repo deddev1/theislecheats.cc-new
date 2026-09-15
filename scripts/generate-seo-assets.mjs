@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { mkdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -80,6 +81,10 @@ await Promise.all([
   )
     .webp({ quality: 88 })
     .toFile(join(mediaDir, 'product-cover.webp')),
+  sharp(readFileSync(join(root, 'public', 'favicon.svg')))
+    .resize(32, 32)
+    .png()
+    .toFile(join(root, 'public', 'favicon.ico')),
 ])
 
 console.log('Generated first-party SEO and product artwork')

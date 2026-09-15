@@ -79,7 +79,7 @@ for (const [name, html] of [
   ['product', product],
   ['reviews', reviews],
 ]) {
-  if (!html.includes('"@id":"https://theislecheats.cc/#product"')) {
+  if (!html.includes('"@id":"https://www.theislecheats.cc/#product"')) {
     fail(`${name}: missing shared Product ID`)
   }
 }
@@ -110,20 +110,20 @@ const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8')
 if (sitemap.includes('<sitemapindex')) fail('sitemap.xml must be a single urlset, not an index')
 if (/forums\/(instructions|how-to-load)/.test(sitemap)) fail('Retired forum remains in sitemap.xml')
 const requiredUrls = [
-  'https://theislecheats.cc/',
-  'https://theislecheats.cc/isle-cheats',
-  'https://theislecheats.cc/forums',
-  'https://theislecheats.cc/forums/features-list',
-  'https://theislecheats.cc/forums/hotkeys',
-  'https://theislecheats.cc/forums/complete-setup',
-  'https://theislecheats.cc/forums/disable-antivirus',
-  'https://theislecheats.cc/forums/undetected-status',
-  'https://theislecheats.cc/reviews',
-  'https://theislecheats.cc/faq',
-  'https://theislecheats.cc/support',
-  'https://theislecheats.cc/privacy',
-  'https://theislecheats.cc/terms',
-  'https://theislecheats.cc/sitemap',
+  'https://www.theislecheats.cc/',
+  'https://www.theislecheats.cc/isle-cheats',
+  'https://www.theislecheats.cc/forums',
+  'https://www.theislecheats.cc/forums/features-list',
+  'https://www.theislecheats.cc/forums/hotkeys',
+  'https://www.theislecheats.cc/forums/complete-setup',
+  'https://www.theislecheats.cc/forums/disable-antivirus',
+  'https://www.theislecheats.cc/forums/undetected-status',
+  'https://www.theislecheats.cc/reviews',
+  'https://www.theislecheats.cc/faq',
+  'https://www.theislecheats.cc/support',
+  'https://www.theislecheats.cc/privacy',
+  'https://www.theislecheats.cc/terms',
+  'https://www.theislecheats.cc/sitemap',
 ]
 for (const url of requiredUrls) {
   if (!sitemap.includes(`<loc>${url}</loc>`)) fail(`sitemap.xml missing ${url}`)
@@ -174,6 +174,8 @@ if (childLocs.size !== requiredUrls.length) {
 if (existsSync(join(dist, 'sitemap-images.xml'))) {
   fail('Remove legacy sitemap-images.xml (URLs must not be duplicated in the index)')
 }
+
+if (!existsSync(join(dist, 'favicon.ico'))) fail('Missing dist/favicon.ico (run generate-seo-assets)')
 
 for (const asset of [
   'public/og/default.jpg',

@@ -70,8 +70,10 @@ const robots = readFileSync(robotsPath, 'utf8')
 if (!robots.includes('Sitemap:') || !robots.includes('/sitemap.xml')) {
   throw new Error('robots.txt must reference sitemap.xml')
 }
-if (!robots.includes('https://theislecheats.cc/sitemap.xml')) {
-  throw new Error('robots.txt Sitemap must use apex https://theislecheats.cc/sitemap.xml')
+const siteUrl = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
+const sitemapUrl = `${siteUrl}/sitemap.xml`
+if (!robots.includes(sitemapUrl)) {
+  throw new Error(`robots.txt Sitemap must use ${sitemapUrl}`)
 }
 
 const indexXml = workerSitemaps['/sitemap-index.xml']
@@ -113,7 +115,7 @@ writeFileSync(
   `User-agent: *
 Allow: /
 
-Sitemap: https://theislecheats.cc/sitemap.xml
+Sitemap: ${sitemapUrl}
 `,
 )
 

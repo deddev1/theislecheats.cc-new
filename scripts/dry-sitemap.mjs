@@ -12,7 +12,7 @@ const dist = join(root, 'dist')
 const publicDir = join(root, 'public')
 const baseDir = existsSync(join(dist, 'sitemap.xml')) ? dist : publicDir
 
-const SITE = (process.env.SITE_URL || 'https://theislecheats.cc').replace(/\/$/, '')
+const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
 const failures = []
 
 function fail(message) {
@@ -90,7 +90,7 @@ function main() {
     assertXmlFile(name, xml, { allowIndex: name === 'sitemap-index.xml' })
     for (const loc of locsFrom(xml)) {
       if (loc !== SITE && !loc.startsWith(`${SITE}/`)) {
-        fail(`${name}: loc outside apex property: ${loc}`)
+        fail(`${name}: loc outside site property: ${loc}`)
       }
     }
     for (const lastmod of lastmodsFrom(xml)) {

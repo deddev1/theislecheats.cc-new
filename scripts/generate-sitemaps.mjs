@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = join(root, 'public')
 const dataDir = join(root, 'src', 'data')
-const SITE = (process.env.SITE_URL || 'https://theislecheats.cc').replace(/\/$/, '')
+const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
 /** W3C datetime (UTC) — Google uses lastmod to decide when to re-fetch. */
 function lastmodNow() {
   return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')

@@ -1,5 +1,5 @@
 /**
- * Apex canonical host + guaranteed XML for all sitemap files (GSC).
+ * HTTPS + sitemap XML for GSC (no www/apex host forcing).
  * Deploy entrypoint is worker.entry.mjs (generated in postbuild).
  */
 import { WORKER_SITEMAPS } from './worker-sitemap-content.mjs'
@@ -11,11 +11,18 @@ const XML_HEADERS = {
   'X-Sitemap-Source': 'worker',
 }
 
-const APEX_HOST = 'theislecheats.cc'
-
 function sitemapKey(pathname) {
   const normalized = pathname.replace(/\/+$/, '') || '/'
   return Object.keys(WORKER_SITEMAPS).find((key) => key.toLowerCase() === normalized.toLowerCase())
+}
+
+/** Browsers / IDE previews only — crawlers omit Sec-Fetch-Dest so they still get XML. */
+function isBrowserDocumentNavigation(request) {
+  const dest = request.headers.get('Sec-Fetch-Dest')
+  if (!dest) return false
+  if (dest !== 'document' && dest !== 'iframe') return false
+  const accept = request.headers.get('Accept') || ''
+  return accept.includes('text/html')
 }
 
 export default {
@@ -27,11 +34,6 @@ export default {
       return Response.redirect(url.toString(), 301)
     }
 
-    if (url.hostname === `www.${APEX_HOST}`) {
-      url.hostname = APEX_HOST
-      return Response.redirect(url.toString(), 301)
-    }
-
     if (/\.xml\/+$/i.test(url.pathname)) {
       url.pathname = url.pathname.replace(/\/+$/, '')
       return Response.redirect(url.toString(), 301)
@@ -39,6 +41,9 @@ export default {
 
     const key = sitemapKey(url.pathname)
     if (key) {
+      if (isBrowserDocumentNavigation(request)) {
+        return Response.redirect(new URL('/sitemap', url.origin).toString(), 302)
+      }
       return new Response(WORKER_SITEMAPS[key], { status: 200, headers: XML_HEADERS })
     }
 
