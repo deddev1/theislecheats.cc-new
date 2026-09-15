@@ -1,4 +1,10 @@
+User-agent: Googlebot
+Allow: /sitemap.xml
+Allow: /google-sitemap.xml
+Allow: /robots.txt
+
 User-agent: *
 Allow: /
 
 Sitemap: https://theislecheats.cc/sitemap.xml
+Sitemap: https://theislecheats.cc/google-sitemap.xml

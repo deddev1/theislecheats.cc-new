@@ -37,6 +37,9 @@ const robots = readFileSync(robotsPath, 'utf8')
 if (!robots.includes('Sitemap:') || !robots.includes('/sitemap.xml')) {
   throw new Error('robots.txt must reference sitemap.xml')
 }
+if (!existsSync(join(dist, 'google-sitemap.xml'))) {
+  throw new Error('dist/google-sitemap.xml missing')
+}
 
 const childMaps = [
   'sitemap-pages.xml',

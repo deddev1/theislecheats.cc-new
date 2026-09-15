@@ -30,27 +30,38 @@
 
 /sitemap.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
 
 /sitemap-index.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
 
 /sitemap-pages.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
 
 /sitemap-products.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
 
 /sitemap-forums.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
 
 /sitemap-forum-topics.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
+
+/google-sitemap.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
 
 /robots.txt
   Cache-Control: public, max-age=3600

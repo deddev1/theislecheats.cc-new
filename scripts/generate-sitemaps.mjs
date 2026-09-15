@@ -10,7 +10,10 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = join(root, 'public')
 const dataDir = join(root, 'src', 'data')
 const SITE = (process.env.SITE_URL || 'https://theislecheats.cc').replace(/\/$/, '')
-const TODAY = new Date().toLocaleDateString('en-CA')
+/** W3C datetime (UTC) — Google uses lastmod to decide when to re-fetch. */
+function lastmodNow() {
+  return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
+}
 
 /** Each URL must appear in exactly one child file (required for sitemap-index in GSC). */
 const CHILD_SITEMAPS = [
@@ -52,22 +55,23 @@ function loadForums() {
 }
 
 function buildEntries(games, forums) {
+  const now = lastmodNow()
   return [
-    { path: '/', lastmod: TODAY, group: 'pages' },
+    { path: '/', lastmod: now, group: 'pages' },
     ...games.map((game) => ({
       path: `/${game.slug}-cheats`,
-      lastmod: TODAY,
+      lastmod: now,
       group: 'products',
     })),
-    { path: '/forums', lastmod: TODAY, group: 'forum-hub' },
+    { path: '/forums', lastmod: now, group: 'forum-hub' },
     ...forums.map((forum) => ({
       path: `/forums/${forum.slug}`,
-      lastmod: forum.date,
+      lastmod: `${forum.date}T00:00:00Z`,
       group: 'forum-topics',
     })),
-    { path: '/reviews', lastmod: TODAY, group: 'pages' },
-    { path: '/faq', lastmod: TODAY, group: 'pages' },
-    { path: '/support', lastmod: TODAY, group: 'pages' },
+    { path: '/reviews', lastmod: now, group: 'pages' },
+    { path: '/faq', lastmod: now, group: 'pages' },
+    { path: '/support', lastmod: now, group: 'pages' },
   ]
 }
 
@@ -93,7 +97,7 @@ function sitemapIndex(files) {
     .map(
       (name) => `  <sitemap>
     <loc>${escapeXml(siteUrl(`/${name}`))}</loc>
-    <lastmod>${TODAY}</lastmod>
+    <lastmod>${lastmodNow()}</lastmod>
   </sitemap>`,
     )
     .join('\n')
@@ -176,10 +180,21 @@ function main() {
   }
   writeFileSync(join(publicDir, 'sitemap-index.xml'), sitemapIndex(CHILD_SITEMAPS))
   writeFileSync(join(publicDir, 'sitemap.xml'), mirror)
+  writeFileSync(join(publicDir, 'google-sitemap.xml'), mirror)
 
   writeFileSync(
     join(publicDir, 'robots.txt'),
-    `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl('/sitemap.xml')}\n`,
+    `User-agent: Googlebot
+Allow: /sitemap.xml
+Allow: /google-sitemap.xml
+Allow: /robots.txt
+
+User-agent: *
+Allow: /
+
+Sitemap: ${siteUrl('/sitemap.xml')}
+Sitemap: ${siteUrl('/google-sitemap.xml')}
+`,
   )
 
   for (const name of [
@@ -187,7 +202,6 @@ function main() {
     'sitemap-regions.xml',
     'sitemap-images.xml',
     'sitemap-0.xml',
-    'google-sitemap.xml',
   ]) {
     const path = join(publicDir, name)
     if (existsSync(path)) unlinkSync(path)
