@@ -184,16 +184,10 @@ function main() {
 
   writeFileSync(
     join(publicDir, 'robots.txt'),
-    `User-agent: Googlebot
-Allow: /sitemap.xml
-Allow: /google-sitemap.xml
-Allow: /robots.txt
-
-User-agent: *
+    `User-agent: *
 Allow: /
 
 Sitemap: ${siteUrl('/sitemap.xml')}
-Sitemap: ${siteUrl('/google-sitemap.xml')}
 `,
   )
 
