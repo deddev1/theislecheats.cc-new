@@ -12,6 +12,11 @@ const XML_HEADERS = {
 
 const APEX_HOST = 'theislecheats.cc'
 
+function sitemapKey(pathname) {
+  const normalized = pathname.replace(/\/+$/, '') || '/'
+  return Object.keys(WORKER_SITEMAPS).find((key) => key.toLowerCase() === normalized.toLowerCase())
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
@@ -21,9 +26,14 @@ export default {
       return Response.redirect(url.toString(), 301)
     }
 
-    const xml = WORKER_SITEMAPS[url.pathname]
-    if (xml) {
-      return new Response(xml, { status: 200, headers: XML_HEADERS })
+    if (/\.xml\/+$/i.test(url.pathname)) {
+      url.pathname = url.pathname.replace(/\/+$/, '')
+      return Response.redirect(url.toString(), 301)
+    }
+
+    const key = sitemapKey(url.pathname)
+    if (key) {
+      return new Response(WORKER_SITEMAPS[key], { status: 200, headers: XML_HEADERS })
     }
 
     return env.ASSETS.fetch(request)
