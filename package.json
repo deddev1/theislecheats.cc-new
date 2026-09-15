@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --port 5174",
-    "build": "node scripts/generate-seo-assets.mjs && node scripts/generate-sitemaps.mjs && astro build",
+    "build": "node scripts/generate-seo-assets.mjs && node scripts/generate-sitemaps.mjs && astro build && node scripts/postbuild-workers.mjs",
+    "deploy": "npm run build && wrangler deploy",
     "preview": "astro preview --port 5174",
     "check": "astro check",
     "generate:sitemaps": "node scripts/generate-sitemaps.mjs",
@@ -33,7 +34,8 @@
     "postcss": "^8.5.28",
     "sharp": "^0.34.4",
     "tailwindcss": "^3.4.19",
-    "typescript": "~6.0.2"
+    "typescript": "~6.0.2",
+    "wrangler": "^4.131.2"
   },
   "engines": {
     "node": ">=22.12.0"

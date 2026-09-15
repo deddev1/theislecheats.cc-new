@@ -1,5 +1,17 @@
-# Optional local Wrangler config for Cloudflare Pages.
-# Dashboard deploy still works with: build = npm run build, output = dist
-name = "theislecheats"
+# Cloudflare Workers static assets (dashboard: build = npm run build, deploy = npx wrangler deploy)
+name = "theisle-cheats-cc"
 compatibility_date = "2026-09-12"
-pages_build_output_dir = "dist"
+workers_dev = true
+
+[assets]
+directory = "./dist"
+not_found_handling = "404-page"
+html_handling = "drop-trailing-slash"
+
+[[routes]]
+pattern = "theislecheats.cc"
+custom_domain = true
+
+[[routes]]
+pattern = "www.theislecheats.cc"
+custom_domain = true
