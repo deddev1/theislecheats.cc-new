@@ -1,6 +1,6 @@
 /**
  * Four child sitemaps + sitemap-index.xml, plus sitemap.xml (same 11 URLs).
- * Minimal urlset (loc + lastmod only) for maximum Google Search Console compatibility.
+ * Urlset with loc, lastmod, and priority (no image/hreflang extensions).
  */
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -54,6 +54,17 @@ function loadForums() {
   }))
 }
 
+/** Sitemap priority 0.0–1.0 (Google may ignore; still useful for other crawlers). */
+function priorityFor(entry) {
+  if (entry.path === '/') return '1.0'
+  if (entry.group === 'products') return '0.9'
+  if (entry.group === 'forum-hub') return '0.8'
+  if (entry.group === 'forum-topics') return '0.7'
+  if (entry.path === '/sitemap') return '0.4'
+  if (entry.path === '/privacy' || entry.path === '/terms') return '0.3'
+  return '0.6'
+}
+
 function buildEntries(games, forums) {
   const now = lastmodNow()
   return [
@@ -74,15 +85,18 @@ function buildEntries(games, forums) {
     { path: '/support', lastmod: now, group: 'pages' },
     { path: '/privacy', lastmod: now, group: 'pages' },
     { path: '/terms', lastmod: now, group: 'pages' },
+    { path: '/sitemap', lastmod: now, group: 'pages' },
   ]
 }
 
 function urlEntry(entry) {
   const url = siteUrl(entry.path)
   const lastmod = entry.lastmod || lastmodNow()
+  const priority = priorityFor(entry)
   return `  <url>
     <loc>${escapeXml(url)}</loc>
     <lastmod>${escapeXml(lastmod)}</lastmod>
+    <priority>${priority}</priority>
   </url>`
 }
 
@@ -129,15 +143,20 @@ function validate(games, forums, entries, mirror) {
   if ((mirror.match(/<url>/g) || []).length !== required.length) {
     errors.push(`Expected ${required.length} URLs in sitemap.xml`)
   }
-  if (/<xhtml:|image:image/i.test(mirror)) {
-    errors.push('sitemap.xml must use minimal urlset (loc + lastmod only)')
+  if (/<xhtml:|image:image|changefreq/i.test(mirror)) {
+    errors.push('sitemap.xml must not use image/hreflang/changefreq extensions')
+  }
+  const urlCount = (mirror.match(/<url>/g) || []).length
+  const priorityCount = (mirror.match(/<priority>/g) || []).length
+  if (priorityCount !== urlCount) {
+    errors.push(`Each <url> must have <priority> (found ${priorityCount} priorities, ${urlCount} URLs)`)
   }
 
   const pages = entries.filter((entry) => entry.group === 'pages')
   const products = entries.filter((entry) => entry.group === 'products')
   const forumHub = entries.filter((entry) => entry.group === 'forum-hub')
   const forumTopics = entries.filter((entry) => entry.group === 'forum-topics')
-  if (pages.length !== 6) errors.push(`Expected 6 page URLs, found ${pages.length}`)
+  if (pages.length !== 7) errors.push(`Expected 7 page URLs, found ${pages.length}`)
   if (products.length !== 1) errors.push(`Expected 1 product URL, found ${products.length}`)
   if (forumHub.length !== 1) errors.push(`Expected 1 forum hub URL, found ${forumHub.length}`)
   if (forumTopics.length !== 5) errors.push(`Expected 5 forum topic URLs, found ${forumTopics.length}`)
@@ -205,7 +224,7 @@ Sitemap: ${siteUrl('/sitemap.xml')}
   }
 
   console.log(
-    `Sitemap OK: minimal urlset — 4 child maps + index + mirror (${entries.length} URLs at ${siteUrl('/sitemap.xml')})`,
+    `Sitemap OK: loc + lastmod + priority — 4 child maps + index + mirror (${entries.length} URLs at ${siteUrl('/sitemap.xml')})`,
   )
 }
 

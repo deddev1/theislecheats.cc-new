@@ -111,6 +111,15 @@ export const SEO = {
     image: PAGE_IMAGES.faq.src,
     robots: 'index, follow, max-image-preview:large, max-snippet:-1',
   },
+  sitemap: {
+    title: 'Sitemap | The Isle Cheats',
+    description:
+      'HTML sitemap of all pages on theislecheats.cc — product, forums, FAQ, support, reviews, and legal.',
+    path: '/sitemap',
+    ogType: 'website',
+    image: PAGE_IMAGES.faq.src,
+    robots: 'index, follow, max-image-preview:large, max-snippet:-1',
+  },
   product: {
     title: 'Evrima ESP Features, Price & Checkout | The Isle',
     description:

@@ -123,6 +123,7 @@ const requiredUrls = [
   'https://theislecheats.cc/support',
   'https://theislecheats.cc/privacy',
   'https://theislecheats.cc/terms',
+  'https://theislecheats.cc/sitemap',
 ]
 for (const url of requiredUrls) {
   if (!sitemap.includes(`<loc>${url}</loc>`)) fail(`sitemap.xml missing ${url}`)
@@ -130,8 +131,12 @@ for (const url of requiredUrls) {
 if ((sitemap.match(/<url>/g) || []).length !== requiredUrls.length) {
   fail(`sitemap.xml must contain exactly ${requiredUrls.length} URLs`)
 }
-if (/<xhtml:|image:image/i.test(sitemap)) {
-  fail('sitemap.xml must be a minimal urlset (loc + lastmod only) for GSC')
+if (/<xhtml:|image:image|changefreq/i.test(sitemap)) {
+  fail('sitemap.xml must not use image/hreflang/changefreq extensions')
+}
+const sitemapUrlCount = (sitemap.match(/<url>/g) || []).length
+if ((sitemap.match(/<priority>/g) || []).length !== sitemapUrlCount) {
+  fail('sitemap.xml must include <priority> on every <url>')
 }
 const childMaps = [
   'sitemap-pages.xml',
@@ -144,8 +149,12 @@ for (const name of childMaps) {
   const path = join(dist, name)
   if (!existsSync(path)) fail(`Missing child sitemap: ${name}`)
   const xml = readFileSync(path, 'utf8')
-  if (/<xhtml:|image:image/i.test(xml)) {
-    fail(`${name} must be a minimal urlset (loc + lastmod only)`)
+  if (/<xhtml:|image:image|changefreq/i.test(xml)) {
+    fail(`${name} must not use image/hreflang/changefreq extensions`)
+  }
+  const urls = (xml.match(/<url>/g) || []).length
+  if ((xml.match(/<priority>/g) || []).length !== urls) {
+    fail(`${name} must include <priority> on every <url>`)
   }
   for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
     const loc = match[1]

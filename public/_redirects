@@ -25,9 +25,6 @@
 /blog/*         /forums/:splat 301
 /forums/*/      /forums/:splat 301
 
-/sitemap                /sitemap.xml               301
-/sitemap/               /sitemap.xml               301
-
 /sitemap-images.xml     /sitemap-forum-topics.xml  301
 /sitemap-blogs.xml      /sitemap-forum-topics.xml  301
 
