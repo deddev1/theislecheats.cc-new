@@ -1,7 +1,7 @@
 /**
- * Serve sitemap XML from the Worker (not only static assets) so GSC always gets valid XML.
+ * Apex canonical host + guaranteed XML for all sitemap files (GSC).
  */
-import { SITEMAP_XML } from './worker-sitemap-content.mjs'
+import { WORKER_SITEMAPS } from './worker-sitemap-content.mjs'
 
 const XML_HEADERS = {
   'Content-Type': 'application/xml; charset=utf-8',
@@ -10,14 +10,20 @@ const XML_HEADERS = {
   'X-Sitemap-Source': 'worker',
 }
 
-const WORKER_SITEMAP_PATHS = new Set(['/sitemap.xml', '/google-sitemap.xml'])
+const APEX_HOST = 'theislecheats.cc'
 
 export default {
   async fetch(request, env) {
-    const { pathname } = new URL(request.url)
+    const url = new URL(request.url)
 
-    if (WORKER_SITEMAP_PATHS.has(pathname)) {
-      return new Response(SITEMAP_XML, { status: 200, headers: XML_HEADERS })
+    if (url.hostname === `www.${APEX_HOST}`) {
+      url.hostname = APEX_HOST
+      return Response.redirect(url.toString(), 301)
+    }
+
+    const xml = WORKER_SITEMAPS[url.pathname]
+    if (xml) {
+      return new Response(xml, { status: 200, headers: XML_HEADERS })
     }
 
     return env.ASSETS.fetch(request)

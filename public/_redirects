@@ -1,3 +1,6 @@
+# Canonical apex (required for GSC URL-prefix property + sitemap host match)
+https://www.theislecheats.cc/* https://theislecheats.cc/:splat 301
+
 # Cloudflare Pages: Astro trailingSlash never + custom 404
 /isle-cheats/   /isle-cheats   301
 /forums/        /forums        301

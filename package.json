@@ -12,6 +12,7 @@
     "generate:sitemaps": "node scripts/generate-sitemaps.mjs",
     "generate:seo-assets": "node scripts/generate-seo-assets.mjs",
     "verify:seo": "node scripts/verify-seo.mjs",
+    "verify:sitemaps-live": "node scripts/verify-live-sitemaps.mjs",
     "lint": "oxlint"
   },
   "dependencies": {
