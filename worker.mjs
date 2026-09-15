@@ -3,7 +3,6 @@
  * Deploy entrypoint is worker.entry.mjs (generated in postbuild).
  */
 import { WORKER_SITEMAPS } from './worker-sitemap-content.mjs'
-import { shouldRedirectSitemapXmlToHtml } from './lib/sitemap-browser-request.mjs'
 
 const XML_HEADERS = {
   'Content-Type': 'application/xml; charset=utf-8',
@@ -33,9 +32,7 @@ export default {
 
     const key = sitemapKey(url.pathname)
     if (key) {
-      if (shouldRedirectSitemapXmlToHtml(request)) {
-        return Response.redirect(new URL('/sitemap', url.origin).toString(), 302)
-      }
+      // Always XML in production — GSC/Googlebot must never get an HTML redirect.
       return new Response(WORKER_SITEMAPS[key], { status: 200, headers: XML_HEADERS })
     }
 

@@ -78,7 +78,10 @@ function main() {
   if (!existsSync(robotsPath)) fail('robots.txt missing')
   else {
     const robots = readFileSync(robotsPath, 'utf8')
-    if (!robots.includes(`Sitemap: ${SITE}/sitemap.xml`)) {
+    if (!robots.includes('/sitemap.xml')) {
+      fail('robots.txt must include a Sitemap: …/sitemap.xml line')
+    }
+    if (!robots.includes(`${SITE}/sitemap.xml`)) {
       fail(`robots.txt must include: Sitemap: ${SITE}/sitemap.xml`)
     }
   }

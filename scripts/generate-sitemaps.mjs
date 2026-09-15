@@ -204,12 +204,17 @@ function main() {
   writeFileSync(join(publicDir, 'sitemap.xml'), mirror)
   writeFileSync(join(publicDir, 'google-sitemap.xml'), mirror)
 
+  const bareSite = SITE.replace('https://www.', 'https://')
+  const sitemapLines = [SITE, bareSite]
+    .filter((value, index, all) => all.indexOf(value) === index)
+    .map((origin) => `Sitemap: ${origin}/sitemap.xml`)
+    .join('\n')
   writeFileSync(
     join(publicDir, 'robots.txt'),
     `User-agent: *
 Allow: /
 
-Sitemap: ${siteUrl('/sitemap.xml')}
+${sitemapLines}
 `,
   )
 

@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://www.theislecheats.cc/sitemap.xml
+Sitemap: https://theislecheats.cc/sitemap.xml

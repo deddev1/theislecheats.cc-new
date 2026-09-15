@@ -73,7 +73,7 @@ if (!robots.includes('Sitemap:') || !robots.includes('/sitemap.xml')) {
 const siteUrl = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
 const sitemapUrl = `${siteUrl}/sitemap.xml`
 if (!robots.includes(sitemapUrl)) {
-  throw new Error(`robots.txt Sitemap must use ${sitemapUrl}`)
+  throw new Error(`robots.txt must include ${sitemapUrl}`)
 }
 
 const indexXml = workerSitemaps['/sitemap-index.xml']
@@ -110,12 +110,17 @@ if (bundled.length < 6000) {
   throw new Error('worker.entry.mjs too small — sitemap XML may be missing from deploy bundle')
 }
 
+const bareSite = siteUrl.replace('https://www.', 'https://')
+const robotsSitemapLines = [siteUrl, bareSite]
+  .filter((value, index, all) => all.indexOf(value) === index)
+  .map((origin) => `Sitemap: ${origin}/sitemap.xml`)
+  .join('\n')
 writeFileSync(
   join(dist, 'robots.txt'),
   `User-agent: *
 Allow: /
 
-Sitemap: ${sitemapUrl}
+${robotsSitemapLines}
 `,
 )
 
