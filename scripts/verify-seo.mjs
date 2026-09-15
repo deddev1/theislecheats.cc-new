@@ -139,10 +139,20 @@ const childMaps = [
   'sitemap-pages.xml',
   'sitemap-products.xml',
   'sitemap-forums.xml',
-  'sitemap-images.xml',
+  'sitemap-forum-topics.xml',
 ]
+let childImageCount = 0
+const childLocs = new Set()
 for (const name of childMaps) {
-  if (!existsSync(join(dist, name))) fail(`Missing child sitemap: ${name}`)
+  const path = join(dist, name)
+  if (!existsSync(path)) fail(`Missing child sitemap: ${name}`)
+  const xml = readFileSync(path, 'utf8')
+  childImageCount += (xml.match(/<image:image>/g) || []).length
+  for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+    const loc = match[1]
+    if (childLocs.has(loc)) fail(`Duplicate URL across child sitemaps: ${loc}`)
+    childLocs.add(loc)
+  }
 }
 const indexPath = join(dist, 'sitemap-index.xml')
 if (!existsSync(indexPath)) fail('Missing sitemap-index.xml')
@@ -150,9 +160,14 @@ const indexXml = readFileSync(indexPath, 'utf8')
 if ((indexXml.match(/<sitemap>/g) || []).length !== 4) {
   fail('sitemap-index.xml must list exactly 4 child sitemaps')
 }
-const imagesMap = readFileSync(join(dist, 'sitemap-images.xml'), 'utf8')
-if ((imagesMap.match(/<image:image>/g) || []).length !== requiredUrls.length) {
-  fail('sitemap-images.xml must include an image entry for every indexed URL')
+if (childLocs.size !== requiredUrls.length) {
+  fail(`Child sitemaps must list exactly ${requiredUrls.length} unique URLs`)
+}
+if (childImageCount !== requiredUrls.length) {
+  fail('Each child sitemap URL must include an image entry')
+}
+if (existsSync(join(dist, 'sitemap-images.xml'))) {
+  fail('Remove legacy sitemap-images.xml (URLs must not be duplicated in the index)')
 }
 
 for (const asset of [

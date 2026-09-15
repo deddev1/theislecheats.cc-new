@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://theislecheats.cc/forums</loc>
     <lastmod>2026-09-14</lastmod>
@@ -8,45 +9,10 @@
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/forums" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/forums" />
-  </url>
-  <url>
-    <loc>https://theislecheats.cc/forums/features-list</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/forums/features-list" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/forums/features-list" />
-  </url>
-  <url>
-    <loc>https://theislecheats.cc/forums/hotkeys</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/forums/hotkeys" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/forums/hotkeys" />
-  </url>
-  <url>
-    <loc>https://theislecheats.cc/forums/complete-setup</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/forums/complete-setup" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/forums/complete-setup" />
-  </url>
-  <url>
-    <loc>https://theislecheats.cc/forums/disable-antivirus</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/forums/disable-antivirus" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/forums/disable-antivirus" />
-  </url>
-  <url>
-    <loc>https://theislecheats.cc/forums/undetected-status</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://theislecheats.cc/forums/undetected-status" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://theislecheats.cc/forums/undetected-status" />
+    <image:image>
+      <image:loc>https://theislecheats.cc/media/theisle-cheats-esp-river.jpg</image:loc>
+      <image:title>The Isle Cheats Forum Gameplay</image:title>
+      <image:caption>Gameplay reference for setup and feature threads.</image:caption>
+    </image:image>
   </url>
 </urlset>

@@ -16,11 +16,12 @@ const HREFLANG = ['en', 'x-default']
 const FOREST = '/media/theisle-cheats-esp-forest.jpg'
 const RIVER = '/media/theisle-cheats-esp-river.jpg'
 
+/** Each URL must appear in exactly one child file (required for sitemap-index in GSC). */
 const CHILD_SITEMAPS = [
   'sitemap-pages.xml',
   'sitemap-products.xml',
   'sitemap-forums.xml',
-  'sitemap-images.xml',
+  'sitemap-forum-topics.xml',
 ]
 
 function escapeXml(value) {
@@ -99,7 +100,7 @@ function buildEntries(games, forums) {
       image: RIVER,
       imageTitle: 'The Isle Cheats Forum Gameplay',
       imageCaption: 'Gameplay reference for setup and feature threads.',
-      group: 'forums',
+      group: 'forum-hub',
     },
     ...forums.map((forum, index) => ({
       path: `/forums/${forum.slug}`,
@@ -109,7 +110,7 @@ function buildEntries(games, forums) {
       image: index % 2 === 0 ? RIVER : FOREST,
       imageTitle: `${forum.title} Gameplay`,
       imageCaption: `Visible Evrima gameplay reference for ${forum.title}.`,
-      group: 'forums',
+      group: 'forum-topics',
     })),
     {
       path: '/reviews',
@@ -209,12 +210,27 @@ function validate(games, forums, entries, mirror) {
 
   const pages = entries.filter((entry) => entry.group === 'pages')
   const products = entries.filter((entry) => entry.group === 'products')
-  const forumEntries = entries.filter((entry) => entry.group === 'forums')
+  const forumHub = entries.filter((entry) => entry.group === 'forum-hub')
+  const forumTopics = entries.filter((entry) => entry.group === 'forum-topics')
   if (pages.length !== 4) errors.push(`Expected 4 page URLs, found ${pages.length}`)
   if (products.length !== 1) errors.push(`Expected 1 product URL, found ${products.length}`)
-  if (forumEntries.length !== 6) errors.push(`Expected 6 forum URLs, found ${forumEntries.length}`)
+  if (forumHub.length !== 1) errors.push(`Expected 1 forum hub URL, found ${forumHub.length}`)
+  if (forumTopics.length !== 5) errors.push(`Expected 5 forum topic URLs, found ${forumTopics.length}`)
 
   if (errors.length) throw new Error(`Sitemap validation failed:\n- ${errors.join('\n- ')}`)
+}
+
+function assertUniqueChildLocs(childFiles) {
+  const seen = new Map()
+  for (const [name, xml] of childFiles) {
+    for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+      const loc = match[1]
+      if (seen.has(loc)) {
+        throw new Error(`Duplicate sitemap URL ${loc} in ${seen.get(loc)} and ${name}`)
+      }
+      seen.set(loc, name)
+    }
+  }
 }
 
 function main() {
@@ -227,21 +243,34 @@ function main() {
 
   const pages = entries.filter((entry) => entry.group === 'pages')
   const products = entries.filter((entry) => entry.group === 'products')
-  const forumEntries = entries.filter((entry) => entry.group === 'forums')
+  const forumHub = entries.filter((entry) => entry.group === 'forum-hub')
+  const forumTopics = entries.filter((entry) => entry.group === 'forum-topics')
 
-  writeFileSync(join(publicDir, 'sitemap-pages.xml'), urlset(pages, { includeImage: false }))
-  writeFileSync(join(publicDir, 'sitemap-products.xml'), urlset(products, { includeImage: false }))
-  writeFileSync(join(publicDir, 'sitemap-forums.xml'), urlset(forumEntries, { includeImage: false }))
-  writeFileSync(join(publicDir, 'sitemap-images.xml'), urlset(entries, { includeImage: true }))
+  const childBodies = [
+    ['sitemap-pages.xml', urlset(pages, { includeImage: true })],
+    ['sitemap-products.xml', urlset(products, { includeImage: true })],
+    ['sitemap-forums.xml', urlset(forumHub, { includeImage: true })],
+    ['sitemap-forum-topics.xml', urlset(forumTopics, { includeImage: true })],
+  ]
+  assertUniqueChildLocs(childBodies)
+  for (const [name, xml] of childBodies) {
+    writeFileSync(join(publicDir, name), xml)
+  }
   writeFileSync(join(publicDir, 'sitemap-index.xml'), sitemapIndex(CHILD_SITEMAPS))
   writeFileSync(join(publicDir, 'sitemap.xml'), mirror)
 
   writeFileSync(
     join(publicDir, 'robots.txt'),
-    `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl('/sitemap-index.xml')}\nSitemap: ${siteUrl('/sitemap.xml')}\n`,
+    `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl('/sitemap.xml')}\nSitemap: ${siteUrl('/sitemap-index.xml')}\n`,
   )
 
-  for (const name of ['sitemap-blogs.xml', 'sitemap-regions.xml', 'sitemap-0.xml', 'google-sitemap.xml']) {
+  for (const name of [
+    'sitemap-blogs.xml',
+    'sitemap-regions.xml',
+    'sitemap-images.xml',
+    'sitemap-0.xml',
+    'google-sitemap.xml',
+  ]) {
     const path = join(publicDir, name)
     if (existsSync(path)) unlinkSync(path)
   }

@@ -36,7 +36,7 @@ const childMaps = [
   'sitemap-pages.xml',
   'sitemap-products.xml',
   'sitemap-forums.xml',
-  'sitemap-images.xml',
+  'sitemap-forum-topics.xml',
 ]
 for (const name of childMaps) {
   const path = join(dist, name)
