@@ -1,5 +1,4 @@
-# Canonical apex (required for GSC URL-prefix property + sitemap host match)
-https://www.theislecheats.cc/* https://theislecheats.cc/:splat 301
+# www → apex is handled in worker.mjs (Workers _redirects allow only relative URLs)
 
 # Cloudflare Pages: Astro trailingSlash never + custom 404
 /isle-cheats/   /isle-cheats   301
@@ -32,10 +31,10 @@ https://www.theislecheats.cc/* https://theislecheats.cc/:splat 301
 /blog/:slug     /forums/:slug  301
 /forums/:slug/  /forums/:slug  301
 
-# Legacy / mistyped sitemap URLs (GSC and old index) — absolute targets for crawlers
-/sitemap-images.xml     https://theislecheats.cc/sitemap-forum-topics.xml  301
-/sitemap-blogs.xml      https://theislecheats.cc/sitemap-forum-topics.xml  301
-/sitemap-index.xml/     https://theislecheats.cc/sitemap-index.xml         301
-/sitemap.xml/           https://theislecheats.cc/sitemap.xml               301
+# Legacy / mistyped sitemap URLs (GSC and old index)
+/sitemap-images.xml     /sitemap-forum-topics.xml  301
+/sitemap-blogs.xml      /sitemap-forum-topics.xml  301
+/sitemap-index.xml/     /sitemap-index.xml         301
+/sitemap.xml/           /sitemap.xml               301
 
 /*              /404.html      404

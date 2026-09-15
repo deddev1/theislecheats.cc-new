@@ -15,7 +15,10 @@ if (existsSync(redirectsPath)) {
   const kept = lines.filter((line) => {
     const trimmed = line.trim()
     if (!trimmed || trimmed.startsWith('#')) return true
-    return !/\s404\s*$/i.test(trimmed) && !/\/404\.html/i.test(trimmed)
+    if (/\s404\s*$/i.test(trimmed) || /\/404\.html/i.test(trimmed)) return false
+    // Workers static assets: absolute URLs in _redirects fail deploy (code 100324)
+    if (/https?:\/\//i.test(trimmed)) return false
+    return true
   })
   writeFileSync(redirectsPath, `${kept.join('\n').replace(/\n+$/, '')}\n`)
 }
