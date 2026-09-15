@@ -9,18 +9,33 @@ import { fileURLToPath } from 'node:url'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const dist = join(root, 'dist')
 
+function workersRedirectLine(raw) {
+  const trimmed = raw.trim()
+  if (!trimmed || trimmed.startsWith('#')) return null
+  if (/\s404\s*$/i.test(trimmed) || /\/404\.html/i.test(trimmed)) return null
+  if (/https?:\/\//i.test(trimmed)) return null
+
+  const match = trimmed.match(/^(\S+)\s+(\S+)\s+(\d{3})$/)
+  if (!match) {
+    throw new Error(`Invalid _redirects line (Workers): ${trimmed}`)
+  }
+  const [, from, to, status] = match
+  if (!from.startsWith('/')) {
+    throw new Error(`_redirects source must be relative: ${from}`)
+  }
+  const dest = to.split('#')[0]
+  if (!dest.startsWith('/') || /https?:\/\//i.test(dest)) {
+    throw new Error(`_redirects destination must be relative: ${to}`)
+  }
+  return `${from} ${dest} ${status}`
+}
+
 const redirectsPath = join(dist, '_redirects')
 if (existsSync(redirectsPath)) {
   const lines = readFileSync(redirectsPath, 'utf8').split(/\r?\n/)
-  const kept = lines.filter((line) => {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) return true
-    if (/\s404\s*$/i.test(trimmed) || /\/404\.html/i.test(trimmed)) return false
-    // Workers static assets: absolute URLs in _redirects fail deploy (code 100324)
-    if (/https?:\/\//i.test(trimmed)) return false
-    return true
-  })
-  writeFileSync(redirectsPath, `${kept.join('\n').replace(/\n+$/, '')}\n`)
+  const kept = lines.map(workersRedirectLine).filter(Boolean)
+  if (!kept.length) throw new Error('dist/_redirects has no Workers-compatible redirect rules')
+  writeFileSync(redirectsPath, `${kept.join('\n')}\n`)
 }
 
 const sitemapFiles = [

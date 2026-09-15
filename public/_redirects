@@ -1,6 +1,3 @@
-# www → apex is handled in worker.mjs (Workers _redirects allow only relative URLs)
-
-# Cloudflare Pages: Astro trailingSlash never + custom 404
 /isle-cheats/   /isle-cheats   301
 /forums/        /forums        301
 /reviews/       /reviews       301
@@ -9,7 +6,6 @@
 /privacy/       /privacy       301
 /terms/         /terms         301
 
-# Transactional keyword variants consolidate on the homepage
 /theisle-cheats   /   301
 /theisle-cheats/  /   301
 /the-isle-cheats  /   301
@@ -17,21 +13,18 @@
 /buy-isle-cheats  /   301
 /buy-isle-cheats/ /   301
 
-# Legacy slugs → forums
 /articles       /forums        301
 /articles/      /forums        301
-/articles/*     /forums        301
-/blog/instructions       /forums/complete-setup#quick-checklist  301
-/blog/how-to-load        /forums/complete-setup#load-order       301
-/forums/instructions     /forums/complete-setup#quick-checklist  301
-/forums/instructions/    /forums/complete-setup#quick-checklist  301
-/forums/how-to-load      /forums/complete-setup#load-order       301
-/forums/how-to-load/     /forums/complete-setup#load-order       301
-/blog/:slug/    /forums/:slug  301
-/blog/:slug     /forums/:slug  301
-/forums/:slug/  /forums/:slug  301
+/articles/*     /forums/:splat 301
+/blog/instructions       /forums/complete-setup  301
+/blog/how-to-load        /forums/complete-setup  301
+/forums/instructions     /forums/complete-setup  301
+/forums/instructions/    /forums/complete-setup  301
+/forums/how-to-load      /forums/complete-setup  301
+/forums/how-to-load/     /forums/complete-setup  301
+/blog/*         /forums/:splat 301
+/forums/*/      /forums/:splat 301
 
-# Legacy / mistyped sitemap URLs (GSC and old index)
 /sitemap-images.xml     /sitemap-forum-topics.xml  301
 /sitemap-blogs.xml      /sitemap-forum-topics.xml  301
 /sitemap-index.xml/     /sitemap-index.xml         301
