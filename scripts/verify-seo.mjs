@@ -169,6 +169,7 @@ if (existsSync(join(dist, 'sitemap-images.xml'))) {
 for (const asset of [
   'public/og/default.jpg',
   'public/media/product-hero.webp',
+  'public/media/home-hero-dino.jpg',
   'public/media/product-cover.webp',
   'public/media/theisle-cheats-esp-forest.jpg',
   'public/media/theisle-cheats-esp-river.jpg',

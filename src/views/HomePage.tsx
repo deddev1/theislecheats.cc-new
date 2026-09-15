@@ -1,5 +1,6 @@
 import { ArrowRight, Crosshair, Eye, Shield, Sparkles } from 'lucide-react'
 import { Navbar } from '../components/Navbar'
+import { VideoBg } from '../components/VideoBg'
 import { LocalVideoStrip } from '../components/LocalVideoStrip'
 import { SiteFooter } from '../components/SiteFooter'
 import { HeroSearch } from '../components/HeroSearch'
@@ -37,8 +38,13 @@ const FEATURES = [
 
 export function HomePage() {
   return (
-    <div className="relative z-10 min-h-screen overflow-x-hidden text-white">
+    <div className="min-h-screen overflow-x-hidden text-white">
       <section id="home" className="relative flex min-h-screen flex-col overflow-x-clip">
+        <VideoBg
+          image="/media/home-hero-dino.jpg"
+          imageAlt="The Isle Cheats — cinematic Carnotaurus hero"
+        />
+
         <div className="relative z-20 flex min-h-screen flex-col">
           <Navbar onVideo />
 
@@ -140,7 +146,7 @@ export function HomePage() {
           aria-hidden
           className="relative border-y border-z-soft/20 bg-z-band"
         >
-          <LocalVideoStrip src="/videos/home-wave.webm" startAt={0} eager />
+          <LocalVideoStrip src="/videos/home-wave" startAt={0} eager />
         </section>
 
         <section id="picks" className="page-x py-16 sm:py-20">

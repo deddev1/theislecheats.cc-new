@@ -3,6 +3,12 @@ import { useEffect, useRef, useState } from 'react'
 const HERO_VIDEO = '/videos/black-angel.webm'
 const START_AT = 5
 
+type VideoBgProps = {
+  /** Static full-bleed hero image — skips video when set (homepage only). */
+  image?: string
+  imageAlt?: string
+}
+
 function prefersReducedMotion() {
   return (
     typeof window !== 'undefined' &&
@@ -10,14 +16,13 @@ function prefersReducedMotion() {
   )
 }
 
-/** Full-bleed hero video (forums hub). Homepage uses HeroBackdrop.astro instead. */
-export function VideoBg() {
+export function VideoBg({ image, imageAlt = '' }: VideoBgProps) {
   const ref = useRef<HTMLVideoElement>(null)
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(Boolean(image))
   const [failed, setFailed] = useState(false)
 
   useEffect(() => {
-    if (prefersReducedMotion()) return
+    if (image || prefersReducedMotion()) return
 
     const video = ref.current
     if (!video) return
@@ -49,6 +54,7 @@ export function VideoBg() {
     const play = () => {
       jumpStart()
       void video.play().then(show).catch(() => {
+        /* autoplay blocked — still reveal once a frame exists */
         if (video.readyState >= 2) show()
       })
     }
@@ -75,7 +81,6 @@ export function VideoBg() {
 
     const onError = () => {
       setFailed(true)
-      show()
     }
 
     video.addEventListener('loadeddata', onLoadedData)
@@ -85,6 +90,7 @@ export function VideoBg() {
     video.addEventListener('ended', onEnded)
     video.addEventListener('error', onError)
 
+    // Failsafe: never leave the hero blank if play/seek stalls
     showTimer = setTimeout(show, 1800)
 
     if (video.readyState >= 2) onLoadedData()
@@ -100,23 +106,34 @@ export function VideoBg() {
       video.removeEventListener('ended', onEnded)
       video.removeEventListener('error', onError)
     }
-  }, [])
+  }, [image])
 
   return (
     <div className="hero-video-wrap absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
       <div className="absolute inset-0 z-0 bg-z-bg" aria-hidden />
-      {!failed ? (
+      {image ? (
+        <img
+          src={image}
+          alt={imageAlt}
+          width={1920}
+          height={1080}
+          decoding="async"
+          fetchPriority="high"
+          className={`hero-video-bg absolute inset-0 z-[1] h-full w-full object-cover object-[78%_42%] sm:object-[72%_40%] transition-opacity duration-700 ${
+            visible ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      ) : !failed ? (
         <video
           ref={ref}
           className={`hero-video-bg absolute inset-0 z-[1] h-full w-full object-cover transition-opacity duration-700 ${
             visible ? 'opacity-100' : 'opacity-0'
           }`}
           src={HERO_VIDEO}
-          autoPlay
           muted
           playsInline
           loop
-          preload="auto"
+          preload="metadata"
           controls={false}
           disablePictureInPicture
           disableRemotePlayback

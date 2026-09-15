@@ -83,7 +83,7 @@ export function ReviewsPage() {
           className="relative mt-10 border-y border-z-soft/20 bg-z-band sm:mt-12"
         >
           <LocalVideoStrip
-            src="/videos/reviews-neon.webm"
+            src="/videos/reviews-neon"
             startAt={5}
             eager
             className="video-strip--reviews"
