@@ -16,6 +16,7 @@ dist-ssr
 prod-*.xml
 out-*.xml
 worker-sitemap-content.mjs
+worker.entry.mjs
 
 # Editor directories and files
 .vscode/*

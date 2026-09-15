@@ -1,5 +1,6 @@
 /**
  * Apex canonical host + guaranteed XML for all sitemap files (GSC).
+ * Deploy entrypoint is worker.entry.mjs (generated in postbuild).
  */
 import { WORKER_SITEMAPS } from './worker-sitemap-content.mjs'
 
@@ -20,6 +21,11 @@ function sitemapKey(pathname) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
+
+    if (url.protocol === 'http:') {
+      url.protocol = 'https:'
+      return Response.redirect(url.toString(), 301)
+    }
 
     if (url.hostname === `www.${APEX_HOST}`) {
       url.hostname = APEX_HOST

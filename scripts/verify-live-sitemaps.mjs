@@ -19,6 +19,9 @@ async function check(path) {
 
   if (!res.ok) fail(`${url}: HTTP ${res.status}`)
   if (!type.includes('xml')) fail(`${url}: expected application/xml, got ${type || '(none)'}`)
+  if (!res.headers.get('x-sitemap-source')) {
+    fail(`${url}: missing X-Sitemap-Source header (Worker sitemap handler not live — redeploy)`)
+  }
   if (/<!DOCTYPE\s+html|<html[\s>]/i.test(body)) fail(`${url}: body is HTML, not XML`)
   if (!body.trimStart().startsWith('<?xml')) fail(`${url}: missing XML declaration`)
   return body
@@ -43,7 +46,11 @@ async function main() {
 
   const wwwRes = await fetch(`https://www.theislecheats.cc/sitemap.xml`, { redirect: 'manual' })
   if (wwwRes.status !== 301 && wwwRes.status !== 308) {
-    fail(`www sitemap should 301 to apex (got ${wwwRes.status})`)
+    fail(`www sitemap should 301 to apex (got ${wwwRes.status}) — use GSC property https://theislecheats.cc not www`)
+  }
+  const httpRes = await fetch(`http://theislecheats.cc/sitemap.xml`, { redirect: 'manual' })
+  if (httpRes.status !== 301 && httpRes.status !== 308) {
+    fail(`http sitemap should 301 to https (got ${httpRes.status})`)
   }
 
   for (const loc of locs) {

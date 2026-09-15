@@ -1,6 +1,6 @@
 # Cloudflare Workers static assets (dashboard: build = npm run build, deploy = npx wrangler deploy)
 name = "theisle-cheats-cc"
-main = "worker.mjs"
+main = "worker.entry.mjs"
 compatibility_date = "2026-09-12"
 workers_dev = true
 
