@@ -3,6 +3,7 @@
  * Deploy entrypoint is worker.entry.mjs (generated in postbuild).
  */
 import { WORKER_SITEMAPS } from './worker-sitemap-content.mjs'
+import { shouldRedirectSitemapXmlToHtml } from './lib/sitemap-browser-request.mjs'
 
 const XML_HEADERS = {
   'Content-Type': 'application/xml; charset=utf-8',
@@ -14,15 +15,6 @@ const XML_HEADERS = {
 function sitemapKey(pathname) {
   const normalized = pathname.replace(/\/+$/, '') || '/'
   return Object.keys(WORKER_SITEMAPS).find((key) => key.toLowerCase() === normalized.toLowerCase())
-}
-
-/** Browsers / IDE previews only — crawlers omit Sec-Fetch-Dest so they still get XML. */
-function isBrowserDocumentNavigation(request) {
-  const dest = request.headers.get('Sec-Fetch-Dest')
-  if (!dest) return false
-  if (dest !== 'document' && dest !== 'iframe') return false
-  const accept = request.headers.get('Accept') || ''
-  return accept.includes('text/html')
 }
 
 export default {
@@ -41,7 +33,7 @@ export default {
 
     const key = sitemapKey(url.pathname)
     if (key) {
-      if (isBrowserDocumentNavigation(request)) {
+      if (shouldRedirectSitemapXmlToHtml(request)) {
         return Response.redirect(new URL('/sitemap', url.origin).toString(), 302)
       }
       return new Response(WORKER_SITEMAPS[key], { status: 200, headers: XML_HEADERS })

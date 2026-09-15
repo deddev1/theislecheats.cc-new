@@ -1,6 +1,30 @@
 import { defineConfig } from 'astro/config'
 import react from '@astrojs/react'
 import tailwind from '@astrojs/tailwind'
+import {
+  isSitemapXmlPath,
+  shouldRedirectSitemapXmlToHtml,
+} from './lib/sitemap-browser-request.mjs'
+
+function sitemapXmlBrowserRedirectMiddleware(req, res, next) {
+  const path = (req.url || '').split('?')[0]
+  if (!isSitemapXmlPath(path)) return next()
+  const request = {
+    headers: {
+      get(name) {
+        const key = name.toLowerCase()
+        const raw = req.headers[key]
+        return Array.isArray(raw) ? raw[0] : raw
+      },
+    },
+  }
+  if (shouldRedirectSitemapXmlToHtml(request)) {
+    res.writeHead(302, { Location: '/sitemap' })
+    res.end()
+    return
+  }
+  next()
+}
 
 export default defineConfig({
   site: 'https://www.theislecheats.cc',
@@ -22,18 +46,10 @@ export default defineConfig({
       {
         name: 'sitemap-xml-browser-redirect',
         configureServer(server) {
-          server.middlewares.use((req, res, next) => {
-            const path = (req.url || '').split('?')[0]
-            if (!/\/sitemap[^/]*\.xml$/i.test(path)) return next()
-            const dest = req.headers['sec-fetch-dest']
-            const accept = req.headers.accept || ''
-            if ((dest === 'document' || dest === 'iframe') && accept.includes('text/html')) {
-              res.writeHead(302, { Location: '/sitemap' })
-              res.end()
-              return
-            }
-            next()
-          })
+          server.middlewares.use(sitemapXmlBrowserRedirectMiddleware)
+        },
+        configurePreviewServer(server) {
+          server.middlewares.use(sitemapXmlBrowserRedirectMiddleware)
         },
       },
     ],
