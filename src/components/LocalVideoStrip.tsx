@@ -78,17 +78,22 @@ export function LocalVideoStrip({
     }
 
     const play = () => {
-      jumpStart()
-      void video.play().then(show).catch(() => {
-        if (video.readyState >= 2) show()
-      })
+      void video
+        .play()
+        .then(show)
+        .catch(() => {
+          show()
+          video.muted = true
+          void video.play().catch(() => show())
+        })
     }
 
-    const onLoadedData = () => {
+    const onLoadedData = () => show()
+
+    const onCanPlay = () => {
       jumpStart()
       play()
     }
-    const onCanPlay = () => play()
     const onPlaying = () => show()
     const onEnded = () => {
       try {
@@ -106,7 +111,7 @@ export function LocalVideoStrip({
 
     showTimer = setTimeout(show, 1800)
 
-    if (video.readyState >= 2) onLoadedData()
+    if (video.readyState >= 2) onCanPlay()
     else video.load()
 
     return () => {
@@ -132,11 +137,13 @@ export function LocalVideoStrip({
             visible ? 'opacity-100' : 'opacity-0'
           }`}
           src={src}
+          autoPlay
           muted
           playsInline
           loop
-          preload="metadata"
+          preload="auto"
           controls={false}
+          controlsList="nodownload noplaybackrate noremoteplayback"
           disablePictureInPicture
           disableRemotePlayback
           aria-hidden

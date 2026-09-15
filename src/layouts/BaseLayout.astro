@@ -8,6 +8,7 @@ import {
   type PageSeo,
 } from '../data/site'
 import { buildPageJsonLd } from '../lib/seo'
+import { HERO_POSTER_IMAGE } from '../data/media'
 
 type Props = {
   seo: PageSeo
@@ -41,7 +42,16 @@ const isHome = seo.path === '/' || seo.path === ''
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
 
-    {isProduct || isHome ? (
+    {isHome ? (
+      <link
+        rel="preload"
+        as="image"
+        href={absoluteUrl(HERO_POSTER_IMAGE)}
+        type="image/webp"
+        fetchpriority="high"
+      />
+    ) : null}
+    {isProduct ? (
       <link rel="preload" as="image" href={imageUrl} type={imageType} fetchpriority="high" />
     ) : null}
 

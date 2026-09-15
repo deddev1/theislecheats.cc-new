@@ -1,5 +1,6 @@
 ﻿---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import HeroBackdrop from '../components/HeroBackdrop.astro'
 import { HomePage } from '../views/HomePage'
 import { SEO } from '../data/site'
 import { productCoreJsonLd } from '../lib/seo'
@@ -9,5 +10,8 @@ import { productCoreJsonLd } from '../lib/seo'
   seo={SEO.home}
   jsonLdExtra={[productCoreJsonLd()]}
 >
-  <HomePage client:idle />
+  <div class="relative text-white">
+    <HeroBackdrop />
+    <HomePage client:idle />
+  </div>
 </BaseLayout>

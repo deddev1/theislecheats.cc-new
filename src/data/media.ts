@@ -8,6 +8,9 @@ export type SeoMediaItem = {
   videoDescription?: string
 }
 
+/** Full-bleed homepage hero — always shown; video layers on top when ready. */
+export const HERO_POSTER_IMAGE = '/media/product-hero.webp'
+
 export const ISLE_ESP_FOREST = '/media/theisle-cheats-esp-forest.jpg'
 export const ISLE_ESP_RIVER = '/media/theisle-cheats-esp-river.jpg'
 export const ISLE_ESP_VIDEO = '/media/theisle-cheats-esp-gameplay.mp4'

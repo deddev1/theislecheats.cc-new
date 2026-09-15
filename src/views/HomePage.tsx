@@ -38,7 +38,7 @@ const FEATURES = [
 
 export function HomePage() {
   return (
-    <div className="min-h-screen overflow-x-hidden text-white">
+    <div className="relative z-10 min-h-screen overflow-x-hidden text-white">
       <section id="home" className="relative flex min-h-screen flex-col overflow-x-clip">
         <VideoBg />
 
@@ -143,7 +143,7 @@ export function HomePage() {
           aria-hidden
           className="relative border-y border-z-soft/20 bg-z-band"
         >
-          <LocalVideoStrip src="/videos/home-wave.webm" startAt={5} />
+          <LocalVideoStrip src="/videos/home-wave.webm" startAt={0} eager />
         </section>
 
         <section id="picks" className="page-x py-16 sm:py-20">

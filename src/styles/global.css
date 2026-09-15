@@ -286,10 +286,14 @@ body {
 .video-strip-local::-webkit-media-controls-enclosure,
 .video-strip-local::-webkit-media-controls-panel,
 .video-strip-local::-webkit-media-controls-start-playback-button,
-.video-strip-local::-webkit-media-controls-overlay-play-button {
+.video-strip-local::-webkit-media-controls-overlay-play-button,
+.video-strip-local::-webkit-media-controls-overlay-play-button,
+.video-strip-local::-webkit-media-controls-current-time-display,
+.video-strip-local::-webkit-media-controls-time-remaining-display {
   display: none !important;
   opacity: 0;
   pointer-events: none;
+  appearance: none;
 }
 
 .game-cover-img {
