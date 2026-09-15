@@ -55,12 +55,28 @@ export const SITE_FAQS: FaqItem[] = [
   },
 ]
 
-/** Commercial questions shown on the homepage; FAQ schema lives on /faq only. */
+/** Commercial questions on the homepage — paraphrased vs /faq; FAQPage schema only on /faq. */
 export const HOME_FAQS: FaqItem[] = [
-  SITE_FAQS[3],
-  SITE_FAQS[4],
-  SITE_FAQS[5],
-  SITE_FAQS[6],
+  {
+    q: 'Are The Isle Cheats undetected against EAC?',
+    a:
+      'After each The Isle or Easy Anti-Cheat patch we label the build Undetected or Updating on theislecheats.cc. Check that badge before you load or inject.',
+  },
+  {
+    q: 'What features are included?',
+    a:
+      'Core kit covers Entity ESP, World ESP, radar, HWID spoofer, and stream-proof mode, with optional aim assist. Open the Features List forum thread for the full checklist.',
+  },
+  {
+    q: 'Do you support Evrima and Horde?',
+    a:
+      'Evrima is the primary target. Horde appears on the product page when the active build lists it — we do not claim modes the current loader does not ship.',
+  },
+  {
+    q: 'How do I buy The Isle Cheats?',
+    a:
+      'From the homepage, confirm status is Undetected, skim price and compatibility on Product details, then continue to checkout for instant digital delivery.',
+  },
 ]
 
 export const PRODUCT_PAGE_FAQS: FaqItem[] = [

@@ -4,6 +4,9 @@ export const SITE_URL = 'https://theislecheats.cc'
 export const SITE_NAME = 'The Isle Cheats'
 export const SITE_HOST = 'theislecheats.cc'
 
+/** Add verified profile URLs only (Discord, X, etc.). Leave empty if none. */
+export const SITE_SAME_AS: string[] = []
+
 /**
  * Sole purpose — used in schema + about copy.
  * Single-product site: The Isle Cheats only (Evrima).
@@ -46,7 +49,7 @@ export type PageSeo = {
 /** Unique SEO per route — commercial / transactional intent. */
 export const SEO = {
   home: {
-    title: 'TheIsle Cheats | Buy The Isle Cheats for Evrima',
+    title: 'The Isle Cheats | Buy for Evrima — Live Status & Checkout',
     description:
       'Buy The Isle Cheats for Evrima with Entity ESP, World ESP, radar and an HWID spoofer. Check live status, features and price before checkout.',
     path: '/',
@@ -90,6 +93,24 @@ export const SEO = {
     image: PAGE_IMAGES.support.src,
     robots: 'index, follow, max-image-preview:large, max-snippet:-1',
   },
+  privacy: {
+    title: 'Privacy Policy | The Isle Cheats',
+    description:
+      'How The Isle Cheats (theislecheats.cc) handles visitor data, checkout handoff, cookies, and support requests.',
+    path: '/privacy',
+    ogType: 'website',
+    image: PAGE_IMAGES.faq.src,
+    robots: 'index, follow, max-image-preview:large, max-snippet:-1',
+  },
+  terms: {
+    title: 'Terms of Use | The Isle Cheats',
+    description:
+      'Terms for using theislecheats.cc and purchasing The Isle Cheats — eligibility, delivery, refunds, and liability.',
+    path: '/terms',
+    ogType: 'website',
+    image: PAGE_IMAGES.faq.src,
+    robots: 'index, follow, max-image-preview:large, max-snippet:-1',
+  },
   product: {
     title: 'Evrima ESP Features, Price & Checkout | The Isle',
     description:
@@ -102,7 +123,7 @@ export const SEO = {
 } as const satisfies Record<string, PageSeo>
 
 export const HOME_HEADINGS = {
-  h1: 'TheIsle Cheats for Evrima',
+  h1: 'The Isle Cheats for Evrima',
   h2Features: 'What you get with The Isle Cheats',
   h2Featured: 'The Isle Cheats for Evrima',
   h2About: 'Why buy The Isle Cheats here',

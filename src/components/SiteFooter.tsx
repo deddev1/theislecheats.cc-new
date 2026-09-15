@@ -1,6 +1,11 @@
 import { LogoMark } from './LogoMark'
 import { SiteLinkHub } from './SiteLinkHub'
-import { OFFICIAL_ISLE_LINKS, SITE_GUIDE_LINKS, SITE_PAGE_LINKS } from '../data/links'
+import {
+  LEGAL_PAGE_LINKS,
+  OFFICIAL_ISLE_LINKS,
+  SITE_GUIDE_LINKS,
+  SITE_PAGE_LINKS,
+} from '../data/links'
 import { SITE_NAME, SITE_URL } from '../data/site'
 
 type SiteFooterProps = {
@@ -33,6 +38,18 @@ export function SiteFooter({ currentPath }: SiteFooterProps) {
               </a>{' '}
               players only.
             </p>
+            <p className="mt-6 text-xs font-semibold uppercase tracking-wider text-white/45">
+              Legal
+            </p>
+            <ul className="mt-2 space-y-2 text-sm text-white/65">
+              {LEGAL_PAGE_LINKS.map((l) => (
+                <li key={l.to}>
+                  <a href={l.to} className="hover:text-white">
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>
@@ -90,11 +107,6 @@ export function SiteFooter({ currentPath }: SiteFooterProps) {
               <li>
                 <a href={SITE_URL} className="hover:text-white">
                   theislecheats.cc
-                </a>
-              </li>
-              <li>
-                <a href="/sitemap.xml" className="hover:text-white">
-                  XML sitemap
                 </a>
               </li>
             </ul>

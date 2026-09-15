@@ -4,6 +4,8 @@
 /reviews/       /reviews       301
 /faq/           /faq           301
 /support/       /support       301
+/privacy/       /privacy       301
+/terms/         /terms         301
 
 # Transactional keyword variants consolidate on the homepage
 /theisle-cheats   /   301

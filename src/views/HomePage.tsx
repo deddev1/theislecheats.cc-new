@@ -111,7 +111,7 @@ export function HomePage() {
         <section className="page-x py-12">
           <div className="mx-auto max-w-6xl">
             <h2 className="mb-5 text-xl font-semibold tracking-tight text-white sm:text-2xl">
-              TheIsle Cheats ESP gameplay
+              The Isle Cheats ESP gameplay
             </h2>
             <SeoMedia media={PAGE_MEDIA.home} priority />
           </div>
@@ -143,7 +143,7 @@ export function HomePage() {
           aria-hidden
           className="relative border-y border-z-soft/20 bg-z-band"
         >
-          <LocalVideoStrip src="/videos/home-wave.webm" startAt={5} eager />
+          <LocalVideoStrip src="/videos/home-wave.webm" startAt={5} />
         </section>
 
         <section id="picks" className="page-x py-16 sm:py-20">

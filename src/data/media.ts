@@ -17,10 +17,10 @@ export const PAGE_MEDIA = {
   home: {
     image: ISLE_ESP_FOREST,
     video: ISLE_ESP_VIDEO,
-    alt: 'TheIsle Cheats Entity ESP highlighting targets in an Evrima forest',
-    title: 'TheIsle Cheats ESP Gameplay',
+    alt: 'The Isle Cheats Entity ESP highlighting targets in an Evrima forest',
+    title: 'The Isle Cheats ESP Gameplay',
     caption: 'Entity ESP shown in The Isle Evrima before checkout.',
-    videoTitle: 'TheIsle Cheats Entity ESP preview',
+    videoTitle: 'The Isle Cheats Entity ESP preview',
     videoDescription: 'Short Evrima gameplay preview showing Entity ESP target overlays.',
   },
   product: {

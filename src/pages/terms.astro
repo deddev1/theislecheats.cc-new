@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { LegalPage } from '../views/LegalPage'
+import { SEO, SITE_URL } from '../data/site'
+import { TERMS_SECTIONS } from '../data/legal'
+
+const jsonLdExtra = [
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: 'Terms', item: `${SITE_URL}/terms` },
+    ],
+  },
+]
+---
+
+<BaseLayout seo={SEO.terms} jsonLdExtra={jsonLdExtra}>
+  <LegalPage
+    client:visible
+    docTitle="Terms of Use"
+    intro="These terms govern your use of theislecheats.cc and digital purchases of The Isle Cheats for Evrima."
+    sections={TERMS_SECTIONS}
+  />
+</BaseLayout>

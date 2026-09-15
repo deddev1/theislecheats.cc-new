@@ -87,8 +87,16 @@ export function VideoBg() {
     // Failsafe: never leave the hero blank if play/seek stalls
     showTimer = setTimeout(show, 1800)
 
-    if (video.readyState >= 2) onLoadedData()
-    else video.load()
+    const startLoad = () => {
+      if (video.readyState >= 2) onLoadedData()
+      else video.load()
+    }
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      window.requestIdleCallback(startLoad, { timeout: 2500 })
+    } else {
+      setTimeout(startLoad, 600)
+    }
 
     return () => {
       cancelled = true
@@ -115,7 +123,7 @@ export function VideoBg() {
           muted
           playsInline
           loop
-          preload="metadata"
+          preload="none"
           controls={false}
           disablePictureInPicture
           disableRemotePlayback

@@ -59,7 +59,9 @@ const importantPages = [
   readFileSync(join(dist, 'forums', 'index.html'), 'utf8'),
 ]
 
-if (!home.includes('<title>TheIsle Cheats | Buy The Isle Cheats for Evrima</title>')) {
+const homeTitle =
+  '<title>The Isle Cheats | Buy for Evrima — Live Status &amp; Checkout</title>'
+if (!home.includes(homeTitle)) {
   fail('Homepage does not own the exact transactional title')
 }
 if (product.includes('<title>Buy The Isle Cheats')) fail('Product details page competes with homepage')
@@ -119,6 +121,8 @@ const requiredUrls = [
   'https://theislecheats.cc/reviews',
   'https://theislecheats.cc/faq',
   'https://theislecheats.cc/support',
+  'https://theislecheats.cc/privacy',
+  'https://theislecheats.cc/terms',
 ]
 for (const url of requiredUrls) {
   if (!sitemap.includes(`<loc>${url}</loc>`)) fail(`sitemap.xml missing ${url}`)
@@ -178,4 +182,4 @@ if (failures.length) {
   throw new Error(`SEO verification failed:\n- ${failures.join('\n- ')}`)
 }
 
-console.log(`SEO verification passed: ${files.length} HTML files, 5 forums, 26 reviews`)
+console.log(`SEO verification passed: ${files.length} HTML files, 5 forums, 26 reviews, legal pages`)

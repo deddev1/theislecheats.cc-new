@@ -6,6 +6,7 @@ import {
   SITE_ABOUT,
   SITE_NAME,
   SITE_PURPOSE,
+  SITE_SAME_AS,
   SITE_URL,
   absoluteUrl,
   type PageSeo,
@@ -45,6 +46,7 @@ export function siteIdentityGraph() {
         height: 46,
       },
       image: absoluteAsset(OG_IMAGE),
+      ...(SITE_SAME_AS.length > 0 ? { sameAs: [...SITE_SAME_AS] } : {}),
     },
     {
       '@type': 'WebSite',

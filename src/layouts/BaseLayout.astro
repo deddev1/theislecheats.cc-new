@@ -41,15 +41,8 @@ const isHome = seo.path === '/' || seo.path === ''
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
 
-    {isProduct ? <link rel="preload" as="image" href={imageUrl} type={imageType} fetchpriority="high" /> : null}
-
-    {isHome ? (
-      <link
-        rel="preload"
-        as="video"
-        href="/videos/black-angel.webm"
-        type="video/webm"
-      />
+    {isProduct || isHome ? (
+      <link rel="preload" as="image" href={imageUrl} type={imageType} fetchpriority="high" />
     ) : null}
 
     <title>{seo.title}</title>

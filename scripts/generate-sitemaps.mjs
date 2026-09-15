@@ -72,6 +72,8 @@ function buildEntries(games, forums) {
     { path: '/reviews', lastmod: now, group: 'pages' },
     { path: '/faq', lastmod: now, group: 'pages' },
     { path: '/support', lastmod: now, group: 'pages' },
+    { path: '/privacy', lastmod: now, group: 'pages' },
+    { path: '/terms', lastmod: now, group: 'pages' },
   ]
 }
 
@@ -134,7 +136,7 @@ function validate(games, forums, entries, mirror) {
   const products = entries.filter((entry) => entry.group === 'products')
   const forumHub = entries.filter((entry) => entry.group === 'forum-hub')
   const forumTopics = entries.filter((entry) => entry.group === 'forum-topics')
-  if (pages.length !== 4) errors.push(`Expected 4 page URLs, found ${pages.length}`)
+  if (pages.length !== 6) errors.push(`Expected 6 page URLs, found ${pages.length}`)
   if (products.length !== 1) errors.push(`Expected 1 product URL, found ${products.length}`)
   if (forumHub.length !== 1) errors.push(`Expected 1 forum hub URL, found ${forumHub.length}`)
   if (forumTopics.length !== 5) errors.push(`Expected 5 forum topic URLs, found ${forumTopics.length}`)

@@ -52,7 +52,7 @@ await Promise.all([
       1200,
       630,
       'EVRIMA · LIVE STATUS · INSTANT DELIVERY',
-      'TheIsle Cheats',
+      'The Isle Cheats',
       'ESP · Radar · Stream-proof · HWID Spoofer',
     ),
   )

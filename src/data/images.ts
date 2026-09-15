@@ -33,8 +33,8 @@ type PageImage = ImageSeoFields & { src: string }
 
 const SOCIAL_IMAGE: PageImage = {
   src: ISLE_OG,
-  alt: 'TheIsle Cheats for Evrima',
-  title: 'TheIsle Cheats',
+  alt: 'The Isle Cheats for Evrima',
+  title: 'The Isle Cheats',
   caption: 'Live status, features, price and checkout for The Isle Evrima',
 }
 
@@ -44,8 +44,8 @@ export const PAGE_IMAGES: Record<
 > = {
   home: {
     src: ISLE_ESP_FOREST,
-    alt: 'TheIsle Cheats Entity ESP gameplay on Evrima',
-    title: 'TheIsle Cheats ESP Gameplay',
+    alt: 'The Isle Cheats Entity ESP gameplay on Evrima',
+    title: 'The Isle Cheats ESP Gameplay',
     caption: 'Entity ESP gameplay shown before checkout.',
   },
   forums: {
@@ -95,6 +95,7 @@ export function getOgImage(path?: string): string {
   if (path === '/reviews') return PAGE_IMAGES.reviews.src
   if (path === '/faq') return PAGE_IMAGES.faq.src
   if (path === '/support') return PAGE_IMAGES.support.src
+  if (path === '/privacy' || path === '/terms') return PAGE_IMAGES.faq.src
   return ISLE_OG
 }
 

@@ -44,6 +44,11 @@ export const SITE_PAGE_LINKS = [
   },
 ] as const
 
+export const LEGAL_PAGE_LINKS = [
+  { label: 'Privacy Policy', to: '/privacy' },
+  { label: 'Terms of Use', to: '/terms' },
+] as const
+
 /** Deep links into forum threads — commercial / transactional. */
 export const SITE_GUIDE_LINKS = [
   { label: 'Features list', to: blogPath('features-list') },
