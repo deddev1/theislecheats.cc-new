@@ -1,6 +1,6 @@
 /**
- * Single sitemap at /sitemap.xml — every indexed URL in one urlset.
- * Support stays out (noindex). Images are attached on the same entries.
+ * Four child sitemaps + sitemap-index.xml, with sitemap.xml as a full mirror urlset.
+ * Support is indexed. Images live in sitemap-images.xml and on mirror entries.
  */
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -15,6 +15,13 @@ const HREFLANG = ['en', 'x-default']
 
 const FOREST = '/media/theisle-cheats-esp-forest.jpg'
 const RIVER = '/media/theisle-cheats-esp-river.jpg'
+
+const CHILD_SITEMAPS = [
+  'sitemap-pages.xml',
+  'sitemap-products.xml',
+  'sitemap-forums.xml',
+  'sitemap-images.xml',
+]
 
 function escapeXml(value) {
   return String(value)
@@ -62,104 +69,126 @@ function imageBlock(image, title, caption) {
     </image:image>`
 }
 
-function urlEntry({
-  path,
-  priority,
-  changefreq,
-  lastmod = TODAY,
-  image,
-  imageTitle,
-  imageCaption,
-}) {
-  const url = siteUrl(path)
+function buildEntries(games, forums) {
+  return [
+    {
+      path: '/',
+      priority: '1.0',
+      changefreq: 'daily',
+      lastmod: TODAY,
+      image: FOREST,
+      imageTitle: 'TheIsle Cheats ESP Gameplay',
+      imageCaption: 'Entity ESP gameplay shown before checkout.',
+      group: 'pages',
+    },
+    ...games.map((game) => ({
+      path: `/${game.slug}-cheats`,
+      priority: '0.9',
+      changefreq: 'weekly',
+      lastmod: TODAY,
+      image: RIVER,
+      imageTitle: 'Evrima ESP Product Gameplay',
+      imageCaption: 'Product features, compatibility, status and price before checkout.',
+      group: 'products',
+    })),
+    {
+      path: '/forums',
+      priority: '0.85',
+      changefreq: 'weekly',
+      lastmod: TODAY,
+      image: RIVER,
+      imageTitle: 'The Isle Cheats Forum Gameplay',
+      imageCaption: 'Gameplay reference for setup and feature threads.',
+      group: 'forums',
+    },
+    ...forums.map((forum, index) => ({
+      path: `/forums/${forum.slug}`,
+      priority: '0.8',
+      changefreq: 'monthly',
+      lastmod: forum.date,
+      image: index % 2 === 0 ? RIVER : FOREST,
+      imageTitle: `${forum.title} Gameplay`,
+      imageCaption: `Visible Evrima gameplay reference for ${forum.title}.`,
+      group: 'forums',
+    })),
+    {
+      path: '/reviews',
+      priority: '0.8',
+      changefreq: 'weekly',
+      lastmod: TODAY,
+      image: FOREST,
+      imageTitle: 'The Isle Cheats Review Gameplay',
+      imageCaption: 'Gameplay accompanying verified buyer reviews.',
+      group: 'pages',
+    },
+    {
+      path: '/faq',
+      priority: '0.75',
+      changefreq: 'monthly',
+      lastmod: TODAY,
+      image: RIVER,
+      imageTitle: 'Evrima ESP FAQ Gameplay',
+      imageCaption: 'Product screenshot accompanying pre-purchase answers.',
+      group: 'pages',
+    },
+    {
+      path: '/support',
+      priority: '0.75',
+      changefreq: 'weekly',
+      lastmod: TODAY,
+      image: FOREST,
+      imageTitle: 'The Isle Cheats Support Gameplay',
+      imageCaption: 'Evrima ESP reference accompanying load, inject and delivery support.',
+      group: 'pages',
+    },
+  ]
+}
+
+function urlEntry(entry, { includeImage = true } = {}) {
+  const url = siteUrl(entry.path)
   const imageXml =
-    image && imageTitle && imageCaption
-      ? `\n${imageBlock(image, imageTitle, imageCaption)}`
+    includeImage && entry.image && entry.imageTitle && entry.imageCaption
+      ? `\n${imageBlock(entry.image, entry.imageTitle, entry.imageCaption)}`
       : ''
   return `  <url>
     <loc>${escapeXml(url)}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
+    <lastmod>${entry.lastmod}</lastmod>
+    <changefreq>${entry.changefreq}</changefreq>
+    <priority>${entry.priority}</priority>
 ${alternateLinks(url)}${imageXml}
   </url>`
 }
 
-function buildSitemap(games, forums) {
-  const entries = [
-    urlEntry({
-      path: '/',
-      priority: '1.0',
-      changefreq: 'daily',
-      image: FOREST,
-      imageTitle: 'TheIsle Cheats ESP Gameplay',
-      imageCaption: 'Entity ESP gameplay shown before checkout.',
-    }),
-    ...games.map((game) =>
-      urlEntry({
-        path: `/${game.slug}-cheats`,
-        priority: '0.9',
-        changefreq: 'weekly',
-        image: RIVER,
-        imageTitle: 'Evrima ESP Product Gameplay',
-        imageCaption: 'Product features, compatibility, status and price before checkout.',
-      }),
-    ),
-    urlEntry({
-      path: '/forums',
-      priority: '0.85',
-      changefreq: 'weekly',
-      image: RIVER,
-      imageTitle: 'The Isle Cheats Forum Gameplay',
-      imageCaption: 'Gameplay reference for setup and feature threads.',
-    }),
-    ...forums.map((forum, index) =>
-      urlEntry({
-        path: `/forums/${forum.slug}`,
-        priority: '0.8',
-        changefreq: 'monthly',
-        lastmod: forum.date,
-        image: index % 2 === 0 ? RIVER : FOREST,
-        imageTitle: `${forum.title} Gameplay`,
-        imageCaption: `Visible Evrima gameplay reference for ${forum.title}.`,
-      }),
-    ),
-    urlEntry({
-      path: '/reviews',
-      priority: '0.8',
-      changefreq: 'weekly',
-      image: FOREST,
-      imageTitle: 'The Isle Cheats Review Gameplay',
-      imageCaption: 'Gameplay accompanying verified buyer reviews.',
-    }),
-    urlEntry({
-      path: '/faq',
-      priority: '0.75',
-      changefreq: 'monthly',
-      image: RIVER,
-      imageTitle: 'Evrima ESP FAQ Gameplay',
-      imageCaption: 'Product screenshot accompanying pre-purchase answers.',
-    }),
-    urlEntry({
-      path: '/support',
-      priority: '0.75',
-      changefreq: 'weekly',
-      image: FOREST,
-      imageTitle: 'The Isle Cheats Support Gameplay',
-      imageCaption: 'Evrima ESP reference accompanying load, inject and delivery support.',
-    }),
-  ]
-
+function urlset(entries, { includeImage = true } = {}) {
+  const body = entries.map((entry) => urlEntry(entry, { includeImage })).join('\n')
+  const imageNs = includeImage
+    ? '\n        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"'
+    : ''
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-${entries.join('\n')}
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"${imageNs}>
+${body}
 </urlset>
 `
 }
 
-function validate(games, forums, sitemap) {
+function sitemapIndex(files) {
+  const entries = files
+    .map(
+      (name) => `  <sitemap>
+    <loc>${escapeXml(siteUrl(`/${name}`))}</loc>
+    <lastmod>${TODAY}</lastmod>
+  </sitemap>`,
+    )
+    .join('\n')
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries}
+</sitemapindex>
+`
+}
+
+function validate(games, forums, entries, mirror) {
   const errors = []
   if (games.length !== 1 || games[0]?.slug !== 'isle') errors.push('Expected one isle product')
   if (forums.length !== 5) errors.push(`Expected 5 forum threads, found ${forums.length}`)
@@ -167,52 +196,59 @@ function validate(games, forums, sitemap) {
     errors.push('Retired forum slug remains indexed')
   }
 
-  const required = [
-    `${SITE}/`,
-    `${SITE}/isle-cheats`,
-    `${SITE}/forums`,
-    `${SITE}/reviews`,
-    `${SITE}/faq`,
-    `${SITE}/support`,
-    ...forums.map((forum) => `${SITE}/forums/${forum.slug}`),
-  ]
+  const required = entries.map((entry) => siteUrl(entry.path))
   for (const url of required) {
-    if (!sitemap.includes(`<loc>${url}</loc>`)) errors.push(`Missing URL: ${url}`)
+    if (!mirror.includes(`<loc>${escapeXml(url)}</loc>`) && !mirror.includes(`<loc>${url}</loc>`)) {
+      errors.push(`Missing URL in mirror sitemap: ${url}`)
+    }
   }
-  if (sitemap.includes('<sitemapindex')) errors.push('sitemap.xml must be a single urlset, not an index')
-  if ((sitemap.match(/<url>/g) || []).length !== required.length) {
-    errors.push(`Expected ${required.length} URLs in sitemap.xml`)
+  if (mirror.includes('<sitemapindex')) errors.push('sitemap.xml must be a single urlset, not an index')
+  if ((mirror.match(/<url>/g) || []).length !== required.length) {
+    errors.push(`Expected ${required.length} URLs in sitemap.xml mirror`)
   }
+
+  const pages = entries.filter((entry) => entry.group === 'pages')
+  const products = entries.filter((entry) => entry.group === 'products')
+  const forumEntries = entries.filter((entry) => entry.group === 'forums')
+  if (pages.length !== 4) errors.push(`Expected 4 page URLs, found ${pages.length}`)
+  if (products.length !== 1) errors.push(`Expected 1 product URL, found ${products.length}`)
+  if (forumEntries.length !== 6) errors.push(`Expected 6 forum URLs, found ${forumEntries.length}`)
+
   if (errors.length) throw new Error(`Sitemap validation failed:\n- ${errors.join('\n- ')}`)
 }
 
 function main() {
   const games = loadGames()
   const forums = loadForums()
-  const sitemap = buildSitemap(games, forums)
-  validate(games, forums, sitemap)
+  const entries = buildEntries(games, forums)
+  const mirror = urlset(entries, { includeImage: true })
 
-  writeFileSync(join(publicDir, 'sitemap.xml'), sitemap)
+  validate(games, forums, entries, mirror)
+
+  const pages = entries.filter((entry) => entry.group === 'pages')
+  const products = entries.filter((entry) => entry.group === 'products')
+  const forumEntries = entries.filter((entry) => entry.group === 'forums')
+
+  writeFileSync(join(publicDir, 'sitemap-pages.xml'), urlset(pages, { includeImage: false }))
+  writeFileSync(join(publicDir, 'sitemap-products.xml'), urlset(products, { includeImage: false }))
+  writeFileSync(join(publicDir, 'sitemap-forums.xml'), urlset(forumEntries, { includeImage: false }))
+  writeFileSync(join(publicDir, 'sitemap-images.xml'), urlset(entries, { includeImage: true }))
+  writeFileSync(join(publicDir, 'sitemap-index.xml'), sitemapIndex(CHILD_SITEMAPS))
+  writeFileSync(join(publicDir, 'sitemap.xml'), mirror)
+
   writeFileSync(
     join(publicDir, 'robots.txt'),
-    `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl('/sitemap.xml')}\n`,
+    `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl('/sitemap-index.xml')}\nSitemap: ${siteUrl('/sitemap.xml')}\n`,
   )
 
-  const stale = [
-    'sitemap-pages.xml',
-    'sitemap-products.xml',
-    'sitemap-forums.xml',
-    'sitemap-images.xml',
-    'sitemap-blogs.xml',
-    'sitemap-regions.xml',
-  ]
-  for (const name of stale) {
+  for (const name of ['sitemap-blogs.xml', 'sitemap-regions.xml', 'sitemap-0.xml', 'google-sitemap.xml']) {
     const path = join(publicDir, name)
     if (existsSync(path)) unlinkSync(path)
   }
 
-  const urlCount = (sitemap.match(/<url>/g) || []).length
-  console.log(`Sitemap OK: ${urlCount} URLs in ${siteUrl('/sitemap.xml')}`)
+  console.log(
+    `Sitemap OK: 4 child maps + index (${entries.length} URLs); mirror at ${siteUrl('/sitemap.xml')}`,
+  )
 }
 
 main()

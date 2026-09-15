@@ -135,14 +135,24 @@ if (!sitemap.includes('/media/theisle-cheats-esp-forest.jpg')) {
 if (!sitemap.includes('/media/theisle-cheats-esp-river.jpg')) {
   fail('sitemap.xml lacks river gameplay image')
 }
-for (const stale of [
+const childMaps = [
   'sitemap-pages.xml',
   'sitemap-products.xml',
   'sitemap-forums.xml',
   'sitemap-images.xml',
-  'sitemap-blogs.xml',
-]) {
-  if (existsSync(join(dist, stale))) fail(`Stale split sitemap still published: ${stale}`)
+]
+for (const name of childMaps) {
+  if (!existsSync(join(dist, name))) fail(`Missing child sitemap: ${name}`)
+}
+const indexPath = join(dist, 'sitemap-index.xml')
+if (!existsSync(indexPath)) fail('Missing sitemap-index.xml')
+const indexXml = readFileSync(indexPath, 'utf8')
+if ((indexXml.match(/<sitemap>/g) || []).length !== 4) {
+  fail('sitemap-index.xml must list exactly 4 child sitemaps')
+}
+const imagesMap = readFileSync(join(dist, 'sitemap-images.xml'), 'utf8')
+if ((imagesMap.match(/<image:image>/g) || []).length !== requiredUrls.length) {
+  fail('sitemap-images.xml must include an image entry for every indexed URL')
 }
 
 for (const asset of [

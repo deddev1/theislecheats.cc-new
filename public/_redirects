@@ -27,11 +27,4 @@
 /blog/:slug     /forums/:slug  301
 /forums/:slug/  /forums/:slug  301
 
-# Legacy split sitemaps → single sitemap
-/sitemap-pages.xml     /sitemap.xml  301
-/sitemap-products.xml  /sitemap.xml  301
-/sitemap-forums.xml    /sitemap.xml  301
-/sitemap-images.xml    /sitemap.xml  301
-/sitemap-blogs.xml     /sitemap.xml  301
-
 /*              /404.html      404

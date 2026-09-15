@@ -27,5 +27,28 @@ const robotsPath = join(dist, 'robots.txt')
 if (!existsSync(robotsPath)) {
   throw new Error('dist/robots.txt missing')
 }
+const robots = readFileSync(robotsPath, 'utf8')
+if (!robots.includes('sitemap-index.xml')) {
+  throw new Error('robots.txt must reference sitemap-index.xml')
+}
+
+const childMaps = [
+  'sitemap-pages.xml',
+  'sitemap-products.xml',
+  'sitemap-forums.xml',
+  'sitemap-images.xml',
+]
+for (const name of childMaps) {
+  const path = join(dist, name)
+  if (!existsSync(path)) throw new Error(`dist/${name} missing`)
+}
+
+const indexPath = join(dist, 'sitemap-index.xml')
+if (!existsSync(indexPath)) throw new Error('dist/sitemap-index.xml missing')
+const indexXml = readFileSync(indexPath, 'utf8')
+const childCount = (indexXml.match(/<sitemap>/g) || []).length
+if (childCount !== 4) {
+  throw new Error(`sitemap-index.xml must list 4 sitemaps, found ${childCount}`)
+}
 
 console.log('Workers deploy prep OK')
