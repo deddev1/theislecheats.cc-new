@@ -1,5 +1,6 @@
 ---
-import { HERO_POSTER_IMAGE } from '../data/media'
+const HERO_VIDEO = '/videos/black-angel.webm'
+const START_AT = 5
 ---
 
 <div
@@ -7,16 +8,19 @@ import { HERO_POSTER_IMAGE } from '../data/media'
   aria-hidden="true"
 >
   <div class="absolute inset-0 z-0 bg-z-bg"></div>
-  <img
-    src={HERO_POSTER_IMAGE}
-    alt=""
-    width={1200}
-    height={630}
-    loading="eager"
-    decoding="async"
-    fetchpriority="high"
-    class="absolute inset-0 z-[1] h-full w-full object-cover"
-  />
+  <video
+    id="site-hero-video"
+    class="hero-video-bg absolute inset-0 z-[1] h-full w-full object-cover"
+    src={HERO_VIDEO}
+    muted
+    autoplay
+    playsinline
+    loop
+    preload="auto"
+    disablepictureinpicture
+    disableremoteplayback
+  >
+  </video>
   <div class="hero-video-tint pointer-events-none absolute inset-0 z-[2]"></div>
   <div class="hero-video-tint-glow pointer-events-none absolute inset-0 z-[2]"></div>
   <div
@@ -25,3 +29,44 @@ import { HERO_POSTER_IMAGE } from '../data/media'
   </div>
   <div class="absolute inset-x-0 top-0 z-[3] h-24 bg-gradient-to-b from-z-bg/70 to-transparent"></div>
 </div>
+
+<script is:inline define:vars={{ startAt: START_AT }}>
+  (function () {
+    var video = document.getElementById('site-hero-video')
+    if (!video || !(video instanceof HTMLVideoElement)) return
+
+    video.muted = true
+    video.defaultMuted = true
+    video.playsInline = true
+    video.loop = true
+
+    function seekStart() {
+      try {
+        if (video.duration > startAt) video.currentTime = startAt
+      } catch (_) {
+        /* ignore */
+      }
+    }
+
+    function play() {
+      seekStart()
+      video.play().catch(function () {})
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      video.pause()
+      video.removeAttribute('autoplay')
+      return
+    }
+
+    video.addEventListener('loadedmetadata', seekStart)
+    video.addEventListener('canplay', play)
+    video.addEventListener('ended', function () {
+      seekStart()
+      video.play().catch(function () {})
+    })
+
+    if (video.readyState >= 1) play()
+    else video.addEventListener('loadeddata', play, { once: true })
+  })()
+</script>

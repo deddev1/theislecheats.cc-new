@@ -8,7 +8,6 @@ import {
   type PageSeo,
 } from '../data/site'
 import { buildPageJsonLd } from '../lib/seo'
-import { HERO_POSTER_IMAGE } from '../data/media'
 
 type Props = {
   seo: PageSeo
@@ -45,9 +44,9 @@ const isHome = seo.path === '/' || seo.path === ''
     {isHome ? (
       <link
         rel="preload"
-        as="image"
-        href={absoluteUrl(HERO_POSTER_IMAGE)}
-        type="image/webp"
+        as="video"
+        href="/videos/black-angel.webm"
+        type="video/webm"
         fetchpriority="high"
       />
     ) : null}

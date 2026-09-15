@@ -1,6 +1,5 @@
 import { ArrowRight, Crosshair, Eye, Shield, Sparkles } from 'lucide-react'
 import { Navbar } from '../components/Navbar'
-import { VideoBg } from '../components/VideoBg'
 import { LocalVideoStrip } from '../components/LocalVideoStrip'
 import { SiteFooter } from '../components/SiteFooter'
 import { HeroSearch } from '../components/HeroSearch'
@@ -40,8 +39,6 @@ export function HomePage() {
   return (
     <div className="relative z-10 min-h-screen overflow-x-hidden text-white">
       <section id="home" className="relative flex min-h-screen flex-col overflow-x-clip">
-        <VideoBg />
-
         <div className="relative z-20 flex min-h-screen flex-col">
           <Navbar onVideo />
 

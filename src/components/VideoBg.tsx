@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { HERO_POSTER_IMAGE } from '../data/media'
 
 const HERO_VIDEO = '/videos/black-angel.webm'
 const START_AT = 5
@@ -11,16 +10,14 @@ function prefersReducedMotion() {
   )
 }
 
+/** Full-bleed hero video (forums hub). Homepage uses HeroBackdrop.astro instead. */
 export function VideoBg() {
   const ref = useRef<HTMLVideoElement>(null)
   const [visible, setVisible] = useState(false)
   const [failed, setFailed] = useState(false)
-  const [motionOk, setMotionOk] = useState(true)
 
   useEffect(() => {
-    const reduced = prefersReducedMotion()
-    setMotionOk(!reduced)
-    if (reduced) return
+    if (prefersReducedMotion()) return
 
     const video = ref.current
     if (!video) return
@@ -78,6 +75,7 @@ export function VideoBg() {
 
     const onError = () => {
       setFailed(true)
+      show()
     }
 
     video.addEventListener('loadeddata', onLoadedData)
@@ -104,33 +102,21 @@ export function VideoBg() {
     }
   }, [])
 
-  const showVideo = motionOk && !failed
-
   return (
     <div className="hero-video-wrap absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
       <div className="absolute inset-0 z-0 bg-z-bg" aria-hidden />
-      <img
-        src={HERO_POSTER_IMAGE}
-        alt=""
-        width={1200}
-        height={630}
-        decoding="async"
-        fetchPriority="high"
-        className="absolute inset-0 z-[1] h-full w-full object-cover"
-        aria-hidden
-      />
-      {showVideo ? (
+      {!failed ? (
         <video
           ref={ref}
-          className={`hero-video-bg absolute inset-0 z-[2] h-full w-full object-cover transition-opacity duration-700 ${
+          className={`hero-video-bg absolute inset-0 z-[1] h-full w-full object-cover transition-opacity duration-700 ${
             visible ? 'opacity-100' : 'opacity-0'
           }`}
           src={HERO_VIDEO}
-          poster={HERO_POSTER_IMAGE}
+          autoPlay
           muted
           playsInline
           loop
-          preload="metadata"
+          preload="auto"
           controls={false}
           disablePictureInPicture
           disableRemotePlayback
@@ -138,10 +124,10 @@ export function VideoBg() {
           tabIndex={-1}
         />
       ) : null}
-      <div className="hero-video-tint pointer-events-none absolute inset-0 z-[3]" aria-hidden />
-      <div className="hero-video-tint-glow pointer-events-none absolute inset-0 z-[3]" aria-hidden />
-      <div className="absolute inset-x-0 bottom-0 z-[4] h-40 bg-gradient-to-t from-z-bg via-z-bg/80 to-transparent" />
-      <div className="absolute inset-x-0 top-0 z-[4] h-24 bg-gradient-to-b from-z-bg/70 to-transparent" />
+      <div className="hero-video-tint pointer-events-none absolute inset-0 z-[2]" aria-hidden />
+      <div className="hero-video-tint-glow pointer-events-none absolute inset-0 z-[2]" aria-hidden />
+      <div className="absolute inset-x-0 bottom-0 z-[3] h-40 bg-gradient-to-t from-z-bg via-z-bg/80 to-transparent" />
+      <div className="absolute inset-x-0 top-0 z-[3] h-24 bg-gradient-to-b from-z-bg/70 to-transparent" />
     </div>
   )
 }
