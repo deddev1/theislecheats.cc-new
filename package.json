@@ -4,15 +4,16 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "astro dev --port 5174",
-    "build": "node scripts/generate-seo-assets.mjs && node scripts/generate-sitemaps.mjs && astro build && node scripts/postbuild-workers.mjs && node scripts/verify-seo.mjs",
+    "dev": "astro dev --port 5175",
+    "build": "node scripts/generate-seo-assets.mjs && node scripts/generate-sitemaps.mjs && astro build && node scripts/postbuild-workers.mjs && node scripts/dry-sitemap.mjs && node scripts/verify-seo.mjs",
     "deploy": "npm run build && wrangler deploy",
-    "preview": "astro preview --port 5174",
+    "preview": "astro preview --port 5175",
     "check": "astro check",
     "generate:sitemaps": "node scripts/generate-sitemaps.mjs",
     "generate:seo-assets": "node scripts/generate-seo-assets.mjs",
     "verify:seo": "node scripts/verify-seo.mjs",
     "verify:sitemaps-live": "node scripts/verify-live-sitemaps.mjs",
+    "dry:sitemap": "node scripts/dry-sitemap.mjs",
     "lint": "oxlint"
   },
   "dependencies": {

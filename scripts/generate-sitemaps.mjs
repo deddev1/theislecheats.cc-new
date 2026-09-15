@@ -79,9 +79,10 @@ function buildEntries(games, forums) {
 
 function urlEntry(entry) {
   const url = siteUrl(entry.path)
+  const lastmod = entry.lastmod || lastmodNow()
   return `  <url>
     <loc>${escapeXml(url)}</loc>
-    <lastmod>${entry.lastmod}</lastmod>
+    <lastmod>${escapeXml(lastmod)}</lastmod>
   </url>`
 }
 
