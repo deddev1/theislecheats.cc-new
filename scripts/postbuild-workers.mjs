@@ -1,8 +1,8 @@
 /**
  * Prepare dist/ for `wrangler deploy` (Workers static assets).
- * Pages-style _redirects (especially /* → 404.html) are not used on Workers.
+ * Keeps 301 rules from _redirects but drops Pages-only /* → 404.html (Workers uses wrangler not_found_handling).
  */
-import { existsSync, readFileSync, unlinkSync } from 'node:fs'
+import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -11,7 +11,13 @@ const dist = join(root, 'dist')
 
 const redirectsPath = join(dist, '_redirects')
 if (existsSync(redirectsPath)) {
-  unlinkSync(redirectsPath)
+  const lines = readFileSync(redirectsPath, 'utf8').split(/\r?\n/)
+  const kept = lines.filter((line) => {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#')) return true
+    return !/\s404\s*$/i.test(trimmed) && !/\/404\.html/i.test(trimmed)
+  })
+  writeFileSync(redirectsPath, `${kept.join('\n').replace(/\n+$/, '')}\n`)
 }
 
 const sitemapPath = join(dist, 'sitemap.xml')
@@ -49,6 +55,9 @@ const indexXml = readFileSync(indexPath, 'utf8')
 const childCount = (indexXml.match(/<sitemap>/g) || []).length
 if (childCount !== 4) {
   throw new Error(`sitemap-index.xml must list 4 sitemaps, found ${childCount}`)
+}
+if (indexXml.includes('sitemap-images.xml')) {
+  throw new Error('sitemap-index.xml must not reference removed sitemap-images.xml')
 }
 
 console.log('Workers deploy prep OK')

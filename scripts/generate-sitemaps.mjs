@@ -1,6 +1,6 @@
 /**
  * Four child sitemaps + sitemap-index.xml, with sitemap.xml as a full mirror urlset.
- * Support is indexed. Images live in sitemap-images.xml and on mirror entries.
+ * Support is indexed. Image metadata is on each child urlset entry and on sitemap.xml.
  */
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'

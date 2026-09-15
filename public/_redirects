@@ -27,4 +27,10 @@
 /blog/:slug     /forums/:slug  301
 /forums/:slug/  /forums/:slug  301
 
+# Legacy / mistyped sitemap URLs (GSC and old index)
+/sitemap-images.xml     /sitemap-forum-topics.xml  301
+/sitemap-blogs.xml      /sitemap-forum-topics.xml  301
+/sitemap-index.xml/     /sitemap-index.xml         301
+/sitemap.xml/           /sitemap.xml               301
+
 /*              /404.html      404
