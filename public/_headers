@@ -36,6 +36,11 @@
   Cache-Control: public, max-age=0, must-revalidate
   CDN-Cache-Control: max-age=0
 
+/sitemap-www.xml
+  Content-Type: application/xml; charset=utf-8
+  Cache-Control: public, max-age=0, must-revalidate
+  CDN-Cache-Control: max-age=0
+
 /sitemap-index.xml
   Content-Type: application/xml; charset=utf-8
   Cache-Control: public, max-age=0, must-revalidate

@@ -62,6 +62,7 @@ const isHome = seo.path === '/' || seo.path === ''
     <meta name="googlebot" content={robots} />
     <meta name="author" content={SITE_NAME} />
     <link rel="canonical" href={url} />
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
     {
       SEO_REGIONS.map((region) => (

@@ -26,6 +26,7 @@ function warn(message) {
 
 const SITEMAP_PATHS = [
   '/sitemap.xml',
+  '/sitemap-www.xml',
   '/sitemap-index.xml',
   '/sitemap-pages.xml',
   '/sitemap-products.xml',
@@ -67,27 +68,22 @@ function auditLocal() {
   }
 }
 
-async function auditLiveHost(host, expectedOrigin) {
-  const res = await fetch(`${host}/sitemap.xml`, {
+async function auditLiveHost(host, expectedOrigin, sitemapPath = '/sitemap.xml') {
+  const res = await fetch(`${host}${sitemapPath}`, {
     headers: { 'User-Agent': GOOGLE_UAS[0], Accept: '*/*' },
   })
-  if (!res.ok) fail(`${host}/sitemap.xml: HTTP ${res.status}`)
+  if (!res.ok) fail(`${host}${sitemapPath}: HTTP ${res.status}`)
   const body = await res.text()
   const locs = [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
-  if (!locs.length) fail(`${host}/sitemap.xml: no URLs`)
+  if (!locs.length) fail(`${host}${sitemapPath}: no URLs`)
   if (!locs.every((loc) => loc === expectedOrigin || loc.startsWith(`${expectedOrigin}/`))) {
-    fail(`${host}/sitemap.xml: <loc> must use ${expectedOrigin} (got ${locs[0]})`)
-  }
-  const robots = await fetch(`${host}/robots.txt`)
-  const robotsText = await robots.text()
-  if (!robotsText.includes(`Sitemap: ${expectedOrigin}/sitemap.xml`)) {
-    fail(`${host}/robots.txt must list Sitemap: ${expectedOrigin}/sitemap.xml`)
+    fail(`${host}${sitemapPath}: <loc> must use ${expectedOrigin} (got ${locs[0]})`)
   }
 }
 
 async function auditLive() {
-  await auditLiveHost(SITE, SITE)
-  await auditLiveHost(ALT_HOST, ALT_HOST)
+  await auditLiveHost(SITE, SITE, '/sitemap.xml')
+  await auditLiveHost(ALT_HOST, ALT_HOST, '/sitemap-www.xml')
 
   for (const ua of GOOGLE_UAS) {
     const res = await fetch(`${SITE}/sitemap.xml`, {
@@ -152,7 +148,7 @@ async function main() {
     process.exit(1)
   }
   console.log(
-    `GSC sitemap audit OK (${live ? 'local + live' : 'local'}). Submit exactly: ${SITE}/sitemap.xml in the matching Search Console property.`,
+    `GSC sitemap audit OK (${live ? 'local + live' : 'local'}). Submit ${SITE}/sitemap.xml (apex/Domain) or ${ALT_HOST}/sitemap-www.xml (www property).`,
   )
 }
 

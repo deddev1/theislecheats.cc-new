@@ -9,9 +9,14 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = join(root, 'public')
 const dataDir = join(root, 'src', 'data')
 /** Bare apex — static file works for Domain/apex GSC; Worker rewrites locs on www host. */
-const SITE = (process.env.SITEMAP_ORIGIN || process.env.SITE_URL || 'https://theislecheats.cc')
+const SITE = (process.env.SITEMAP_ORIGIN || 'https://theislecheats.cc')
   .replace('https://www.', 'https://')
   .replace(/\/$/, '')
+const SITE_WWW = SITE.replace('https://', 'https://www.')
+
+function xmlForOrigin(xml, origin) {
+  return xml.replaceAll(SITE, origin).replaceAll(SITE_WWW, origin)
+}
 
 function lastmodNow() {
   return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
@@ -185,19 +190,16 @@ function main() {
   }
   writeFileSync(join(publicDir, 'sitemap-index.xml'), sitemapIndex(CHILD_SITEMAPS))
   writeFileSync(join(publicDir, 'sitemap.xml'), mirror)
+  writeFileSync(join(publicDir, 'sitemap-www.xml'), xmlForOrigin(mirror, SITE_WWW))
   writeFileSync(join(publicDir, 'google-sitemap.xml'), mirror)
 
-  const wwwSite = SITE.replace('https://', 'https://www.')
-  const sitemapLines = [SITE, wwwSite]
-    .filter((value, index, all) => all.indexOf(value) === index)
-    .map((origin) => `Sitemap: ${origin}/sitemap.xml`)
-    .join('\n')
   writeFileSync(
     join(publicDir, 'robots.txt'),
     `User-agent: *
 Allow: /
 
-${sitemapLines}
+Sitemap: ${SITE}/sitemap.xml
+Sitemap: ${SITE_WWW}/sitemap-www.xml
 `,
   )
 
@@ -212,7 +214,7 @@ ${sitemapLines}
   }
 
   console.log(
-    `Sitemap OK: minimal GSC urlset — 4 child maps + index + mirror (${entries.length} URLs at ${siteUrl('/sitemap.xml')})`,
+    `Sitemap OK: ${entries.length} URLs — GSC apex: ${SITE}/sitemap.xml | www: ${SITE_WWW}/sitemap-www.xml`,
   )
 }
 

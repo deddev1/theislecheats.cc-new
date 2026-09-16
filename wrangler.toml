@@ -1,6 +1,6 @@
 # Cloudflare Workers static assets — build must run before deploy (generates worker.entry.mjs).
 name = "theisle-cheats-cc"
-main = "worker.entry.mjs"
+main = "worker.mjs"
 compatibility_date = "2026-09-12"
 workers_dev = true
 

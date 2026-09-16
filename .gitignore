@@ -16,6 +16,8 @@ dist-ssr
 prod-*.xml
 out-*.xml
 .sitemap-test.xml
+worker-sitemap-content.mjs
+worker.entry.mjs
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

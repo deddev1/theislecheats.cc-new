@@ -13,6 +13,7 @@ const publicDir = join(root, 'public')
 const baseDir = existsSync(join(dist, 'sitemap.xml')) ? dist : publicDir
 
 const SITE = (process.env.SITEMAP_ORIGIN || 'https://theislecheats.cc').replace(/\/$/, '').replace('https://www.', 'https://')
+const SITE_WWW = SITE.replace('https://', 'https://www.')
 const failures = []
 
 function fail(message) {
@@ -21,6 +22,7 @@ function fail(message) {
 
 const SITEMAP_FILES = [
   'sitemap.xml',
+  'sitemap-www.xml',
   'google-sitemap.xml',
   'sitemap-index.xml',
   'sitemap-pages.xml',
@@ -78,6 +80,9 @@ function main() {
     if (!robots.includes(`${SITE}/sitemap.xml`)) {
       fail(`robots.txt must include: Sitemap: ${SITE}/sitemap.xml`)
     }
+    if (!robots.includes(`${SITE_WWW}/sitemap-www.xml`)) {
+      fail(`robots.txt must include: Sitemap: ${SITE_WWW}/sitemap-www.xml`)
+    }
   }
 
   const bodies = {}
@@ -85,9 +90,10 @@ function main() {
     const xml = readXml(name)
     bodies[name] = xml
     assertXmlFile(name, xml, { allowIndex: name === 'sitemap-index.xml' })
+    const expectedOrigin = name === 'sitemap-www.xml' ? SITE_WWW : SITE
     for (const loc of locsFrom(xml)) {
-      if (loc !== SITE && !loc.startsWith(`${SITE}/`)) {
-        fail(`${name}: loc outside site property: ${loc}`)
+      if (loc !== expectedOrigin && !loc.startsWith(`${expectedOrigin}/`)) {
+        fail(`${name}: loc must use ${expectedOrigin}`)
       }
     }
     for (const lastmod of lastmodsFrom(xml)) {
