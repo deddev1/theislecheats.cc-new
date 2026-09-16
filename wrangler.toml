@@ -1,8 +1,11 @@
-# Cloudflare Workers static assets (dashboard: build = npm run build, deploy = npx wrangler deploy)
+# Cloudflare Workers static assets — build must run before deploy (generates worker.entry.mjs).
 name = "theisle-cheats-cc"
 main = "worker.entry.mjs"
 compatibility_date = "2026-09-12"
 workers_dev = true
+
+[build]
+command = "npm run build"
 
 [assets]
 directory = "./dist"

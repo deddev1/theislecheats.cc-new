@@ -2,6 +2,7 @@
  * Smoke-test live sitemap URLs (run after deploy). Usage: node scripts/verify-live-sitemaps.mjs
  */
 const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
+const BARE = SITE.includes('www.') ? SITE.replace('www.', '') : SITE
 const failures = []
 
 const SITEMAP_PATHS = [
@@ -56,6 +57,20 @@ async function main() {
   }
 
   const mainXml = await check('/sitemap.xml')
+  const bareRes = await fetch(`${BARE}/sitemap.xml`, {
+    headers: { 'User-Agent': GOOGLE_UAS[0], Accept: '*/*' },
+  })
+  if (!bareRes.ok) fail(`${BARE}/sitemap.xml: HTTP ${bareRes.status}`)
+  const bareXml = await bareRes.text()
+  const bareLocs = [...bareXml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
+  if (bareLocs.length && !bareLocs.every((loc) => loc === BARE || loc.startsWith(`${BARE}/`))) {
+    fail(`Bare-host sitemap must use ${BARE} in <loc> (match apex GSC property)`)
+  }
+  const workerHeader = bareRes.headers.get('x-sitemap-source')
+  if (!workerHeader) {
+    console.warn('No X-Sitemap-Source — redeploy with wrangler after npm run build (Worker not serving sitemaps).')
+  }
+
   for (const path of SITEMAP_PATHS) {
     if (path === '/sitemap.xml') continue
     await check(path)

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev --port 5175",
     "build": "node scripts/generate-seo-assets.mjs && node scripts/generate-sitemaps.mjs && astro build && node scripts/postbuild-workers.mjs && node scripts/dry-sitemap.mjs && node scripts/audit-google-sitemap.mjs && node scripts/verify-seo.mjs",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "wrangler deploy",
     "preview": "astro preview --port 5175",
     "check": "astro check",
     "generate:sitemaps": "node scripts/generate-sitemaps.mjs",

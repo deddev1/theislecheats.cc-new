@@ -3,6 +3,7 @@
  * Deploy entrypoint is worker.entry.mjs (generated in postbuild).
  */
 import { WORKER_SITEMAPS } from './worker-sitemap-content.mjs'
+import { adaptSitemapXmlForHost, robotsTxtForHost } from './lib/sitemap-host.mjs'
 
 const XML_HEADERS = {
   'Content-Type': 'application/xml; charset=utf-8',
@@ -30,10 +31,21 @@ export default {
       return Response.redirect(url.toString(), 301)
     }
 
+    const path = url.pathname.replace(/\/+$/, '') || '/'
+    if (path === '/robots.txt') {
+      return new Response(robotsTxtForHost(url.hostname), {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      })
+    }
+
     const key = sitemapKey(url.pathname)
     if (key) {
-      // Always XML in production — GSC/Googlebot must never get an HTML redirect.
-      return new Response(WORKER_SITEMAPS[key], { status: 200, headers: XML_HEADERS })
+      const xml = adaptSitemapXmlForHost(WORKER_SITEMAPS[key], url.hostname)
+      return new Response(xml, { status: 200, headers: XML_HEADERS })
     }
 
     return env.ASSETS.fetch(request)

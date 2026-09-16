@@ -67,7 +67,28 @@ function auditLocal() {
   }
 }
 
+async function auditLiveHost(host, expectedOrigin) {
+  const res = await fetch(`${host}/sitemap.xml`, {
+    headers: { 'User-Agent': GOOGLE_UAS[0], Accept: '*/*' },
+  })
+  if (!res.ok) fail(`${host}/sitemap.xml: HTTP ${res.status}`)
+  const body = await res.text()
+  const locs = [...body.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
+  if (!locs.length) fail(`${host}/sitemap.xml: no URLs`)
+  if (!locs.every((loc) => loc === expectedOrigin || loc.startsWith(`${expectedOrigin}/`))) {
+    fail(`${host}/sitemap.xml: <loc> must use ${expectedOrigin} (got ${locs[0]})`)
+  }
+  const robots = await fetch(`${host}/robots.txt`)
+  const robotsText = await robots.text()
+  if (!robotsText.includes(`Sitemap: ${expectedOrigin}/sitemap.xml`)) {
+    fail(`${host}/robots.txt must list Sitemap: ${expectedOrigin}/sitemap.xml`)
+  }
+}
+
 async function auditLive() {
+  await auditLiveHost(SITE, SITE)
+  await auditLiveHost(ALT_HOST, ALT_HOST)
+
   for (const ua of GOOGLE_UAS) {
     const res = await fetch(`${SITE}/sitemap.xml`, {
       headers: {
