@@ -19,10 +19,15 @@ Static Astro site for The Isle (Evrima) cheats — Cloudflare Pages ready.
 | `npm run check` | Astro + TypeScript diagnostics |
 | `npm run lint` | Oxlint |
 
-## Cloudflare (Pages or Workers Builds)
+## Cloudflare Workers Builds (Git: `deddev1/theislecheats.cc-new`)
 
+- **Worker name:** `theislecheats-cc-new3` (must match `name` in `wrangler.toml`)
+- **Production branch:** `main`
 - **Build command:** `npm run build`
-- **Deploy command:** `npx wrangler deploy` (uses `wrangler.toml` `[assets]` → `dist/`)
+- **Deploy command:** `npx wrangler deploy`
+- **Version command (optional):** `npx wrangler versions upload` (non-production branches)
+- **Root directory:** `/`
+- **Build watch paths:** include `*`, exclude `node_modules/**`, `.git/`
 - **Pages Git only:** leave deploy empty; set **output directory** to `dist`
 - **Node version:** 22 (or latest LTS)
 - **Framework preset:** None / Astro (static)
