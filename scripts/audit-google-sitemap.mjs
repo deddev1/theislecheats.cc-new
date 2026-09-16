@@ -11,8 +11,8 @@ import { isSearchCrawlerUserAgent } from '../lib/sitemap-browser-request.mjs'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const dist = join(root, 'dist')
 const live = process.argv.includes('--live')
-const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
-const ALT_HOST = SITE.includes('www.') ? SITE.replace('www.', '') : SITE.replace('https://', 'https://www.')
+const SITE = (process.env.SITEMAP_ORIGIN || 'https://theislecheats.cc').replace(/\/$/, '').replace('https://www.', 'https://')
+const ALT_HOST = 'https://www.theislecheats.cc'
 const failures = []
 const warnings = []
 

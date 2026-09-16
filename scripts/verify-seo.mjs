@@ -110,20 +110,19 @@ const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8')
 if (sitemap.includes('<sitemapindex')) fail('sitemap.xml must be a single urlset, not an index')
 if (/forums\/(instructions|how-to-load)/.test(sitemap)) fail('Retired forum remains in sitemap.xml')
 const requiredUrls = [
-  'https://www.theislecheats.cc/',
-  'https://www.theislecheats.cc/isle-cheats',
-  'https://www.theislecheats.cc/forums',
-  'https://www.theislecheats.cc/forums/features-list',
-  'https://www.theislecheats.cc/forums/hotkeys',
-  'https://www.theislecheats.cc/forums/complete-setup',
-  'https://www.theislecheats.cc/forums/disable-antivirus',
-  'https://www.theislecheats.cc/forums/undetected-status',
-  'https://www.theislecheats.cc/reviews',
-  'https://www.theislecheats.cc/faq',
-  'https://www.theislecheats.cc/support',
-  'https://www.theislecheats.cc/privacy',
-  'https://www.theislecheats.cc/terms',
-  'https://www.theislecheats.cc/sitemap',
+  'https://theislecheats.cc/',
+  'https://theislecheats.cc/isle-cheats',
+  'https://theislecheats.cc/forums',
+  'https://theislecheats.cc/forums/features-list',
+  'https://theislecheats.cc/forums/hotkeys',
+  'https://theislecheats.cc/forums/complete-setup',
+  'https://theislecheats.cc/forums/disable-antivirus',
+  'https://theislecheats.cc/forums/undetected-status',
+  'https://theislecheats.cc/reviews',
+  'https://theislecheats.cc/faq',
+  'https://theislecheats.cc/support',
+  'https://theislecheats.cc/privacy',
+  'https://theislecheats.cc/terms',
 ]
 for (const url of requiredUrls) {
   if (!sitemap.includes(`<loc>${url}</loc>`)) fail(`sitemap.xml missing ${url}`)
@@ -131,12 +130,8 @@ for (const url of requiredUrls) {
 if ((sitemap.match(/<url>/g) || []).length !== requiredUrls.length) {
   fail(`sitemap.xml must contain exactly ${requiredUrls.length} URLs`)
 }
-if (/<xhtml:|image:image|changefreq/i.test(sitemap)) {
-  fail('sitemap.xml must not use image/hreflang/changefreq extensions')
-}
-const sitemapUrlCount = (sitemap.match(/<url>/g) || []).length
-if ((sitemap.match(/<priority>/g) || []).length !== sitemapUrlCount) {
-  fail('sitemap.xml must include <priority> on every <url>')
+if (/<xhtml:|image:image|changefreq|<priority>/i.test(sitemap)) {
+  fail('sitemap.xml must be minimal (loc + lastmod only) for GSC')
 }
 const childMaps = [
   'sitemap-pages.xml',
@@ -149,12 +144,8 @@ for (const name of childMaps) {
   const path = join(dist, name)
   if (!existsSync(path)) fail(`Missing child sitemap: ${name}`)
   const xml = readFileSync(path, 'utf8')
-  if (/<xhtml:|image:image|changefreq/i.test(xml)) {
-    fail(`${name} must not use image/hreflang/changefreq extensions`)
-  }
-  const urls = (xml.match(/<url>/g) || []).length
-  if ((xml.match(/<priority>/g) || []).length !== urls) {
-    fail(`${name} must include <priority> on every <url>`)
+  if (/<xhtml:|image:image|changefreq|<priority>/i.test(xml)) {
+    fail(`${name} must be minimal (loc + lastmod only) for GSC`)
   }
   for (const match of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
     const loc = match[1]

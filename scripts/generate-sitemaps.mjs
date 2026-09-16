@@ -1,6 +1,5 @@
 /**
- * Four child sitemaps + sitemap-index.xml, plus sitemap.xml (same 11 URLs).
- * Urlset with loc, lastmod, and priority (no image/hreflang extensions).
+ * Four child sitemaps + sitemap-index.xml, plus sitemap.xml (minimal loc + lastmod for GSC).
  */
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -9,13 +8,15 @@ import { fileURLToPath } from 'node:url'
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const publicDir = join(root, 'public')
 const dataDir = join(root, 'src', 'data')
-const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
-/** W3C datetime (UTC) — Google uses lastmod to decide when to re-fetch. */
+/** Bare apex — static file works for Domain/apex GSC; Worker rewrites locs on www host. */
+const SITE = (process.env.SITEMAP_ORIGIN || process.env.SITE_URL || 'https://theislecheats.cc')
+  .replace('https://www.', 'https://')
+  .replace(/\/$/, '')
+
 function lastmodNow() {
   return new Date().toISOString().replace(/\.\d{3}Z$/, 'Z')
 }
 
-/** Each URL must appear in exactly one child file (required for sitemap-index in GSC). */
 const CHILD_SITEMAPS = [
   'sitemap-pages.xml',
   'sitemap-products.xml',
@@ -54,17 +55,6 @@ function loadForums() {
   }))
 }
 
-/** Sitemap priority 0.0–1.0 (Google may ignore; still useful for other crawlers). */
-function priorityFor(entry) {
-  if (entry.path === '/') return '1.0'
-  if (entry.group === 'products') return '0.9'
-  if (entry.group === 'forum-hub') return '0.8'
-  if (entry.group === 'forum-topics') return '0.7'
-  if (entry.path === '/sitemap') return '0.4'
-  if (entry.path === '/privacy' || entry.path === '/terms') return '0.3'
-  return '0.6'
-}
-
 function buildEntries(games, forums) {
   const now = lastmodNow()
   return [
@@ -85,18 +75,15 @@ function buildEntries(games, forums) {
     { path: '/support', lastmod: now, group: 'pages' },
     { path: '/privacy', lastmod: now, group: 'pages' },
     { path: '/terms', lastmod: now, group: 'pages' },
-    { path: '/sitemap', lastmod: now, group: 'pages' },
   ]
 }
 
 function urlEntry(entry) {
   const url = siteUrl(entry.path)
   const lastmod = entry.lastmod || lastmodNow()
-  const priority = priorityFor(entry)
   return `  <url>
     <loc>${escapeXml(url)}</loc>
     <lastmod>${escapeXml(lastmod)}</lastmod>
-    <priority>${priority}</priority>
   </url>`
 }
 
@@ -143,20 +130,16 @@ function validate(games, forums, entries, mirror) {
   if ((mirror.match(/<url>/g) || []).length !== required.length) {
     errors.push(`Expected ${required.length} URLs in sitemap.xml`)
   }
-  if (/<xhtml:|image:image|changefreq/i.test(mirror)) {
-    errors.push('sitemap.xml must not use image/hreflang/changefreq extensions')
+  if (/<xhtml:|image:image|changefreq|<priority>/i.test(mirror)) {
+    errors.push('sitemap.xml must be minimal (loc + lastmod only) for GSC')
   }
-  const urlCount = (mirror.match(/<url>/g) || []).length
-  const priorityCount = (mirror.match(/<priority>/g) || []).length
-  if (priorityCount !== urlCount) {
-    errors.push(`Each <url> must have <priority> (found ${priorityCount} priorities, ${urlCount} URLs)`)
-  }
+  if (!mirror.startsWith('<?xml')) errors.push('sitemap.xml must start with <?xml')
 
   const pages = entries.filter((entry) => entry.group === 'pages')
   const products = entries.filter((entry) => entry.group === 'products')
   const forumHub = entries.filter((entry) => entry.group === 'forum-hub')
   const forumTopics = entries.filter((entry) => entry.group === 'forum-topics')
-  if (pages.length !== 7) errors.push(`Expected 7 page URLs, found ${pages.length}`)
+  if (pages.length !== 6) errors.push(`Expected 6 page URLs, found ${pages.length}`)
   if (products.length !== 1) errors.push(`Expected 1 product URL, found ${products.length}`)
   if (forumHub.length !== 1) errors.push(`Expected 1 forum hub URL, found ${forumHub.length}`)
   if (forumTopics.length !== 5) errors.push(`Expected 5 forum topic URLs, found ${forumTopics.length}`)
@@ -204,8 +187,8 @@ function main() {
   writeFileSync(join(publicDir, 'sitemap.xml'), mirror)
   writeFileSync(join(publicDir, 'google-sitemap.xml'), mirror)
 
-  const bareSite = SITE.replace('https://www.', 'https://')
-  const sitemapLines = [SITE, bareSite]
+  const wwwSite = SITE.replace('https://', 'https://www.')
+  const sitemapLines = [SITE, wwwSite]
     .filter((value, index, all) => all.indexOf(value) === index)
     .map((origin) => `Sitemap: ${origin}/sitemap.xml`)
     .join('\n')
@@ -229,7 +212,7 @@ ${sitemapLines}
   }
 
   console.log(
-    `Sitemap OK: loc + lastmod + priority — 4 child maps + index + mirror (${entries.length} URLs at ${siteUrl('/sitemap.xml')})`,
+    `Sitemap OK: minimal GSC urlset — 4 child maps + index + mirror (${entries.length} URLs at ${siteUrl('/sitemap.xml')})`,
   )
 }
 

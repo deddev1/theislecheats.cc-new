@@ -70,7 +70,7 @@ const robots = readFileSync(robotsPath, 'utf8')
 if (!robots.includes('Sitemap:') || !robots.includes('/sitemap.xml')) {
   throw new Error('robots.txt must reference sitemap.xml')
 }
-const siteUrl = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
+const siteUrl = (process.env.SITEMAP_ORIGIN || 'https://theislecheats.cc').replace(/\/$/, '').replace('https://www.', 'https://')
 const sitemapUrl = `${siteUrl}/sitemap.xml`
 if (!robots.includes(sitemapUrl)) {
   throw new Error(`robots.txt must include ${sitemapUrl}`)

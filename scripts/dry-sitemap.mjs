@@ -12,7 +12,7 @@ const dist = join(root, 'dist')
 const publicDir = join(root, 'public')
 const baseDir = existsSync(join(dist, 'sitemap.xml')) ? dist : publicDir
 
-const SITE = (process.env.SITE_URL || 'https://www.theislecheats.cc').replace(/\/$/, '')
+const SITE = (process.env.SITEMAP_ORIGIN || 'https://theislecheats.cc').replace(/\/$/, '').replace('https://www.', 'https://')
 const failures = []
 
 function fail(message) {
@@ -53,8 +53,8 @@ function assertXmlFile(name, xml, { allowIndex = false } = {}) {
   } else if (name !== 'robots.txt') {
     if (!xml.includes('<urlset')) fail(`${name}: must be a urlset`)
     if (xml.includes('<sitemapindex')) fail(`${name}: must not be a sitemap index`)
-    if (/<xhtml:|image:image|changefreq/i.test(xml)) {
-      fail(`${name}: must not use image/hreflang/changefreq extensions`)
+    if (/<xhtml:|image:image|changefreq|<priority>/i.test(xml)) {
+      fail(`${name}: must be minimal (loc + lastmod only) for GSC`)
     }
   }
 }
@@ -66,12 +66,6 @@ function locsFrom(xml) {
 function lastmodsFrom(xml) {
   return [...xml.matchAll(/<lastmod>([^<]*)<\/lastmod>/g)].map((m) => m[1])
 }
-
-function prioritiesFrom(xml) {
-  return [...xml.matchAll(/<priority>([^<]*)<\/priority>/g)].map((m) => m[1])
-}
-
-const PRIORITY_RE = /^[01](\.\d)?$/
 
 function main() {
   const robotsPath = join(baseDir, 'robots.txt')
@@ -99,16 +93,6 @@ function main() {
     for (const lastmod of lastmodsFrom(xml)) {
       if (!lastmod || !LASTMOD_RE.test(lastmod)) {
         fail(`${name}: invalid or empty lastmod: ${lastmod || '(empty)'}`)
-      }
-    }
-    const urlBlocks = (xml.match(/<url>/g) || []).length
-    const priorities = prioritiesFrom(xml)
-    if (urlBlocks && priorities.length !== urlBlocks) {
-      fail(`${name}: expected ${urlBlocks} <priority> tags, found ${priorities.length}`)
-    }
-    for (const priority of priorities) {
-      if (!PRIORITY_RE.test(priority)) {
-        fail(`${name}: invalid priority (0.0–1.0): ${priority}`)
       }
     }
   }

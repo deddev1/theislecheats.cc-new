@@ -1,6 +1,8 @@
 import { ISLE_OG, PAGE_IMAGES } from './images'
 
 export const SITE_URL = 'https://www.theislecheats.cc'
+/** Sitemap <loc> URLs (bare host) — matches Domain / apex GSC properties; Worker rewrites for www. */
+export const SITEMAP_ORIGIN = 'https://theislecheats.cc'
 export const SITE_NAME = 'The Isle Cheats'
 export const SITE_HOST = 'www.theislecheats.cc'
 
