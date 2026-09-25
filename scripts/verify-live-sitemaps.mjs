@@ -53,7 +53,10 @@ async function main() {
   const apexLocs = assertLocs(apexXml, APEX, 'apex sitemap')
 
   const wwwXml = await fetchXml(`${WWW}/sitemap-www.xml`)
-  assertLocs(wwwXml, WWW, 'www sitemap')
+  assertLocs(wwwXml, WWW, 'www sitemap (sitemap-www.xml)')
+
+  const wwwMainXml = await fetchXml(`${WWW}/sitemap.xml`)
+  assertLocs(wwwMainXml, WWW, 'www sitemap (/sitemap.xml)')
 
   for (const path of [
     '/sitemap-index.xml',

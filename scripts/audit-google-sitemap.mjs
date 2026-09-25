@@ -84,6 +84,7 @@ async function auditLiveHost(host, expectedOrigin, sitemapPath = '/sitemap.xml')
 async function auditLive() {
   await auditLiveHost(SITE, SITE, '/sitemap.xml')
   await auditLiveHost(ALT_HOST, ALT_HOST, '/sitemap-www.xml')
+  await auditLiveHost(ALT_HOST, ALT_HOST, '/sitemap.xml')
 
   for (const ua of GOOGLE_UAS) {
     const res = await fetch(`${SITE}/sitemap.xml`, {
